@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<html>
+<head>
 <meta charset="utf-8">
 <style>
 
@@ -24,7 +26,7 @@
 	stroke: #aaa;
 }
 
-.inset {
+.inset-region {
 	fill: #ddd;
 	stroke: #777;
 	stroke-dasharray: 2,2;
@@ -32,8 +34,12 @@
     opacity: .35;
 }
 
+.inset-map {
+    border: 1px solid #ddd;
+    background: white;
+}
+
 </style>
-<body>
 <script src="scripts/d3.v3.min.js"></script>
 <!-- <script src="http://d3js.org/queue.v1.min.js"></script> -->
 <!-- <script src="http://d3js.org/topojson.v1.min.js"></script> -->
@@ -42,4 +48,7 @@
 <script src="scripts/topojson.v1.min.js"></script>
 <script src="scripts/coffee-script.js"></script>
 <script type="text/coffeescript" src="scripts/map.coffee"></script>
-</script>
+</head>
+<body>
+</body>
+</html>

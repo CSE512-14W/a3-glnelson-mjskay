@@ -6,7 +6,7 @@ whiskyKey = (whisky) -> whisky.RowID
 ###
 Return the distance measure for ordering the given whisky
 ###
-whiskyDistance = (whisky) -> Math.random() * 5 + 1    #TODO: properly map this to distance
+whiskyDistance = (whisky) -> Math.random() * 2 + 1    #TODO: properly map this to distance
 
 # Setup maps 
 width = 600
@@ -18,7 +18,10 @@ speyside = {
     svg: d3.select("body").append("div").append("svg")
         .attr("width", width/2)
         .attr("height", height/3)
-        .style("border", "1px solid #ddd")
+        .attr("class", "inset-map")
+        .style("position", "relative")
+        .style("left", 100)
+        .style("top", 10)
 
     projection: d3.geo.albers()
         .center([0, 55.4])
@@ -38,7 +41,7 @@ scotland = {
     svg: d3.select("body").append("div").append("svg")
         .attr("width", width - 200)
         .attr("height", height)
-        .style("border", "1px solid #ddd")
+        .attr("class", "map")
 
     #projection used to map long/lat to cartesian coords
     projection: d3.geo.albers()
@@ -49,8 +52,31 @@ scotland = {
         .translate([width / 2 - 100, height / 2 + 160])
 }
 
+#ISLAY INSET
+islay = { 
+    svg: d3.select("body").append("div").append("svg")
+        .attr("width", width/3)
+        .attr("height", height/3)
+        .attr("class", "inset-map")
+        .style("position", "relative")
+        .style("top", "-20")
+
+    projection: d3.geo.albers()
+        .center([0, 55.4])
+        .rotate([4.4, 0])
+        .parallels([50, 60])
+        .scale(1200 * 23)
+        .translate([width / 4 + 440, height / 3 + 90])
+
+    #approx bounds of inset in long/lat
+    p0: [-6.597748, 55.551942]
+    p1: [-5.81337, 55.983019]
+} 
+
+
 insets = [
     speyside
+    islay
 ]
 
 
@@ -119,7 +145,7 @@ drawMap = (uk, {svg, projection}) ->
     projectPath = d3.geo.path()
         .projection(projection)
 
-    #Based on http://bost.ocks.org/mike/map/ 
+    #Portions originally based on http://bost.ocks.org/mike/map/ 
 
     #draw map backgrounds
     svg.selectAll(".subunit")
@@ -153,7 +179,7 @@ queue()
                 .attr("y", p1[1])
                 .attr("width", Math.abs(p1[0] - p0[0]))
                 .attr("height", Math.abs(p1[1] - p0[1]))
-                .attr("class", "inset")
+                .attr("class", "inset-region")
                 
             #draw inset map
             drawMap(uk, inset)
