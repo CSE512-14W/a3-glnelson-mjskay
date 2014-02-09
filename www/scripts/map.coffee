@@ -1,5 +1,12 @@
-#whisky key function for joining data
+###
+Return the key for joining whisky data in d3
+###
 whiskyKey = (whisky) -> whisky.RowID
+
+###
+Return the distance measure for ordering the given whisky
+###
+whiskyDistance = (whisky) -> Math.random() * 5 + 1    #TODO: properly map this to distance
 
 # Setup map 
 width = 960
@@ -39,7 +46,7 @@ redrawMap = (whiskies) ->
     #update existing distilleries
     distilleries
         .transition()
-        .attr("r", (d) -> Math.random() * 5 + 1)        #TODO: map this to distance
+        .attr("r", whiskyDistance)
 
     #create non-existing ones    
     distilleries
@@ -48,7 +55,7 @@ redrawMap = (whiskies) ->
             .attr("cy", (d) -> projection([d.Longitude, d.Latitude])[1])
             .attr("r", 0)
             .transition()
-            .attr("r", (d) -> Math.random() * 5 + 1)    #TODO: map this to distance
+            .attr("r", whiskyDistance)
             
     #remove exiting ones
     distilleries
