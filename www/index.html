@@ -6,14 +6,42 @@
     <script type="text/javascript" src="./scripts/d3.v3.js"></script>
 </head>
 <body>
-    <div id="viz"></div>
-    <div id="circleviz"></div>
+    <div id="baseline"></div>
+    <div id="table"></div>
+    <div id="chart"></div>
     <script type="text/javascript">
       d3.text("whiskies.csv", function(datasetText) {
+        var data = d3.csv("whiskies.csv", function(d){
+          return {
+            RowID: d.RowID,
+            Distillery: d.Distillery,
+            Body: d.Body,
+            Sweetness: d.Sweetness,
+            Smoky: d.Smoky,
+            Medicinal: d.Medicinal,
+            Tobacco: d.Tobacco,
+            Honey: d.Honey,
+            Spicy: d.Spicy,
+            Winey: d.Winey,
+            Nutty: d.Nutty,
+            Malty: d.Malty,
+            Fruity: d.Fruity,
+            Floral: d.Floral,
+            Postcode: d.Postcode,
+            Longitude: +d.Longitude,
+            Latitude: +d.Latitude,
+            distance: +d.Longitude // default value
+          };
+        }, function(error,rows){
+          console.log(rows);
+        });
         var parsedCSV = d3.csv.parseRows(datasetText);
         // -- TODO add top baseline row for testing
         // -- TODO add column for distance_from_baseline
-        var sampleHTML = d3.select("#viz")
+        /* when create data element, just have a on change event that updates d3 data value
+        */
+
+        var table = d3.select("#table")
             .append("table")
             .style("border-collapse", "collapse")
             .style("border", "2px black solid")
@@ -31,21 +59,22 @@
             .on("mouseout", function(){d3.select(this).style("background-color", "white")})
             .text(function(d){return d;})
             .style("font-size", "12px");
+
+        var sampleSVG = d3.select("#chart")
+            .append("svg")
+            .attr("width", 300)
+            .attr("height", 300);    
+
+        sampleSVG.append("circle")
+            .style("stroke", "gray")
+            .style("fill", "white")
+            .attr("r", 40)
+            .attr("cx", 50)
+            .attr("cy", 50)
+            .on("mouseover", function(){d3.select(this).style("fill", "aliceblue");})
+            .on("mouseout", function(){d3.select(this).style("fill", "white");});
       });
 
-    var sampleSVG = d3.select("#circleviz")
-        .append("svg")
-        .attr("width", 100)
-        .attr("height", 100);    
-
-    sampleSVG.append("circle")
-        .style("stroke", "gray")
-        .style("fill", "white")
-        .attr("r", 40)
-        .attr("cx", 50)
-        .attr("cy", 50)
-        .on("mouseover", function(){d3.select(this).style("fill", "aliceblue");})
-        .on("mouseout", function(){d3.select(this).style("fill", "white");});
     
     </script>
 </body>
