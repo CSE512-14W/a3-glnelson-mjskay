@@ -11,7 +11,8 @@
     <script type="text/javascript">
       d3.text("whiskies.csv", function(datasetText) {
         var parsedCSV = d3.csv.parseRows(datasetText);
-         
+        // -- TODO add top baseline row for testing
+        // -- TODO add column for distance_from_baseline
         var sampleHTML = d3.select("#viz")
             .append("table")
             .style("border-collapse", "collapse")
