@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+/* map styles */
+.subunit.SCT { 
+    fill: #8dd3c7; 
+}
+.subunit.WLS, 
+.subunit.NIR, 
+.subunit.ENG, 
+.subunit.IRL {
+    fill: #ddd;
+}
+
+.subunit-boundary {
+  fill: none;
+  stroke: #777;
+  stroke-dasharray: 2,2;
+  stroke-linejoin: round;
+}
+
+.subunit-boundary.IRL {
+  stroke: #aaa;
+}
+
+</style>
+<body>
+<script src="scripts/d3.v3.min.js"></script>
+<script src="http://d3js.org/queue.v1.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="http://coffeescript.org/extras/coffee-script.js"></script>
+<script type="text/coffeescript" src="scripts/map.coffee"></script>
+</script>
