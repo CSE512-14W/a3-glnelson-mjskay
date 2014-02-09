@@ -7,10 +7,134 @@
     <script src="http://d3js.org/queue.v1.min.js"></script>
 </head>
 <body>
-    <div id="baseline"></div>
+    <div id="baseline">
+     <table>
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+    </div>
     <div id="table"></div>
     <div id="chart"></div>
     <script type="text/javascript">
+        var columnNames = ["RowID",
+                        "Distillery",
+                        "Body",
+                        "Sweetness",
+                        "Smoky",
+                        "Medicinal",
+                        "Tobacco",
+                        "Honey",
+                        "Spicy",
+                        "Winey",
+                        "Nutty",
+                        "Malty",
+                        "Fruity",
+                        "Floral",
+                        "Postcode",
+                        "Longitude",
+                        "Latitude",
+                        "distance",
+                        "selected"];
+        var tableColumnNames = [
+                        "Distillery",
+                        "Body",
+                        "Sweetness",
+                        "Smoky",
+                        "Medicinal",
+                        "Tobacco",
+                        "Honey",
+                        "Spicy",
+                        "Winey",
+                        "Nutty",
+                        "Malty",
+                        "Fruity",
+                        "Floral",
+                        "Postcode",
+                        "Longitude",
+                        "Latitude",
+                        "distance"];
+      var whiskyKey = function (whisky) {
+        return whisky.RowID;};
+      var drawHeaderRow = function (table) {
+        return table.append("thead")
+               .data(tableColumnNames)
+               .enter()
+               .append("th")
+               .html(function(column) {return column;});
+      };
+      var redrawBaseline = function(rowID) {
+        baseline=[data[rowID-1]];
+        table = d3.select("#baseline")
+            .append("table")
+            .style("border-collapse", "collapse")
+            .style("border", "2px black solid");
+
+        drawHeaderRow(table);
+
+        table.selectAll("tr")
+            .data(data, whiskyKey)
+            .enter().append("tr")
+            .selectAll("td")
+            .data(function(row){
+              return tableColumnNames.map( function(column){
+                return {column: column, value: row[column]};
+              }); 
+            })
+            .enter()
+            .append("td")
+            .style("border", "1px black solid")
+            .style("padding", "5px")
+            .on("mouseover", function(){d3.select(this).style("background-color", "aliceblue")})
+            .on("mouseout", function(){d3.select(this).style("background-color", "white")})
+            .style("font-size", "12px")
+            .html(function(d) {return d.value});
+      };
+
+      // based on code from http://www.d3noob.org/2013/02/add-html-table-to-your-d3js-graph.html
+      // columns has name: string of the column
+      //             baselineDraw: function that outputs html to draw the column for baseline
+      //               runs off of d3 so
+      //
+      // assumes the div already hase table, thead, tbody elements in the html
+      var drawTable = function (div, data, columns) {
+        var table = d3.select(div).select("table")
+                    .attr("style", "margin-left: 250px"),
+                thead = table.select("thead"),
+                tbody = table.select("tbody");
+        
+            // append the header row
+            // TODO fix, 
+            thead.selectAll("tr")
+                .selectAll("th")
+                .data(columns)
+                .enter()
+                .append("th")
+                    .text(function(column) { return column; });
+        
+            // create a row for each object in the data
+            var rows = tbody.selectAll("tr")
+                .data(data)
+                .enter()
+                .append("tr");
+        
+            // create a cell in each row for each column
+            var cells = rows.selectAll("td")
+                .data(function(row) {
+                    return columns.map(function(column) {
+                        return {column: column, value: row[column]};
+                    });
+                })
+                .enter()
+                .append("td")
+                .html(function(d) { return d.value; })
+                .on("click", function(){ // click to select 
+                  d3.select(this.parentNode).datumstyle("background-color", "aliceblue")
+                })
+;
+            
+            return table;
+      };
+
       var data = 0;
       queue()
         .defer(function(callback){
@@ -19,22 +143,23 @@
                       return {
                         RowID: d.RowID,
                         Distillery: d.Distillery,
-                        Body: d.Body,
-                        Sweetness: d.Sweetness,
-                        Smoky: d.Smoky,
-                        Medicinal: d.Medicinal,
-                        Tobacco: d.Tobacco,
-                        Honey: d.Honey,
-                        Spicy: d.Spicy,
-                        Winey: d.Winey,
-                        Nutty: d.Nutty,
-                        Malty: d.Malty,
-                        Fruity: d.Fruity,
-                        Floral: d.Floral,
+                        Body: +d.Body,
+                        Sweetness: +d.Sweetness,
+                        Smoky: +d.Smoky,
+                        Medicinal: +d.Medicinal,
+                        Tobacco: +d.Tobacco,
+                        Honey: +d.Honey,
+                        Spicy: +d.Spicy,
+                        Winey: +d.Winey,
+                        Nutty: +d.Nutty,
+                        Malty: +d.Malty,
+                        Fruity: +d.Fruity,
+                        Floral: +d.Floral,
                         Postcode: d.Postcode,
                         Longitude: +d.Longitude,
                         Latitude: +d.Latitude,
-                        distance: +d.Latitude // default value
+                        distance: +d.Latitude, // default value
+                        selected: false // default value
                       };
                     })
                    .get( function(error,rows){
@@ -42,55 +167,29 @@
                       //console.log(rows);
                     })}) 
         .await (function (error, whiskies) {
-                   //data = whiskies
-                   /*.row( function(d){
-                      return {
-                        RowID: d.RowID,
-                        Distillery: d.Distillery,
-                        Body: d.Body,
-                        Sweetness: d.Sweetness,
-                        Smoky: d.Smoky,
-                        Medicinal: d.Medicinal,
-                        Tobacco: d.Tobacco,
-                        Honey: d.Honey,
-                        Spicy: d.Spicy,
-                        Winey: d.Winey,
-                        Nutty: d.Nutty,
-                        Malty: d.Malty,
-                        Fruity: d.Fruity,
-                        Floral: d.Floral,
-                        Postcode: d.Postcode,
-                        Longitude: +d.Longitude,
-                        Latitude: +d.Latitude,
-                        distance: +d.Latitude // default value
-                      };
-                    })
-                   .get( function(error,rows){
-                      data = rows;
-                      //console.log(rows);
-                    }); */
-      });
-      d3.text("whiskies.csv", function(datasetText) {
-        var parsedCSV = d3.csv.parseRows(datasetText);
-        // -- TODO add top baseline row for testing
-        // -- TODO add column for distance_from_baseline
+            // for some reason right now none of this code is getting called here
+              console.log("await was called");
+            // initial conditions
+            // draw table
+            
+            // select Ardbeg as default
+
+            // draw baseline
+
+            // draw map 
         /* when create data element, just have a on change event that updates d3 data value
         */
-        var baseline = d3.select("#baseline")
-            .append("table")
-            .selectAll("tr")
-            .data(data)
-
+        redrawBaseline(4);// default is Ardbeg               
         var table = d3.select("#table")
             .append("table")
             .style("border-collapse", "collapse")
             .style("border", "2px black solid")
         
             .selectAll("tr")
-            .data(parsedCSV)
+            .data(data, whiskyKey)
             .enter().append("tr")
         
-            .selectAll("td")
+            .select("td")
             .data(function(d){return d;})
             .enter().append("td")
             .style("border", "1px black solid")
