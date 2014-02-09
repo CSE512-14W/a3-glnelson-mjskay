@@ -4,42 +4,82 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <script type="text/javascript" src="./scripts/d3.v3.js"></script>
+    <script src="http://d3js.org/queue.v1.min.js"></script>
 </head>
 <body>
     <div id="baseline"></div>
     <div id="table"></div>
     <div id="chart"></div>
     <script type="text/javascript">
+      var data = 0;
+      queue()
+        .defer(function(callback){
+            d3.csv("whiskies.csv")
+               .row( function(d){
+                      return {
+                        RowID: d.RowID,
+                        Distillery: d.Distillery,
+                        Body: d.Body,
+                        Sweetness: d.Sweetness,
+                        Smoky: d.Smoky,
+                        Medicinal: d.Medicinal,
+                        Tobacco: d.Tobacco,
+                        Honey: d.Honey,
+                        Spicy: d.Spicy,
+                        Winey: d.Winey,
+                        Nutty: d.Nutty,
+                        Malty: d.Malty,
+                        Fruity: d.Fruity,
+                        Floral: d.Floral,
+                        Postcode: d.Postcode,
+                        Longitude: +d.Longitude,
+                        Latitude: +d.Latitude,
+                        distance: +d.Latitude // default value
+                      };
+                    })
+                   .get( function(error,rows){
+                      data = rows;
+                      //console.log(rows);
+                    })}) 
+        .await (function (error, whiskies) {
+                   //data = whiskies
+                   /*.row( function(d){
+                      return {
+                        RowID: d.RowID,
+                        Distillery: d.Distillery,
+                        Body: d.Body,
+                        Sweetness: d.Sweetness,
+                        Smoky: d.Smoky,
+                        Medicinal: d.Medicinal,
+                        Tobacco: d.Tobacco,
+                        Honey: d.Honey,
+                        Spicy: d.Spicy,
+                        Winey: d.Winey,
+                        Nutty: d.Nutty,
+                        Malty: d.Malty,
+                        Fruity: d.Fruity,
+                        Floral: d.Floral,
+                        Postcode: d.Postcode,
+                        Longitude: +d.Longitude,
+                        Latitude: +d.Latitude,
+                        distance: +d.Latitude // default value
+                      };
+                    })
+                   .get( function(error,rows){
+                      data = rows;
+                      //console.log(rows);
+                    }); */
+      });
       d3.text("whiskies.csv", function(datasetText) {
-        var data = d3.csv("whiskies.csv", function(d){
-          return {
-            RowID: d.RowID,
-            Distillery: d.Distillery,
-            Body: d.Body,
-            Sweetness: d.Sweetness,
-            Smoky: d.Smoky,
-            Medicinal: d.Medicinal,
-            Tobacco: d.Tobacco,
-            Honey: d.Honey,
-            Spicy: d.Spicy,
-            Winey: d.Winey,
-            Nutty: d.Nutty,
-            Malty: d.Malty,
-            Fruity: d.Fruity,
-            Floral: d.Floral,
-            Postcode: d.Postcode,
-            Longitude: +d.Longitude,
-            Latitude: +d.Latitude,
-            distance: +d.Longitude // default value
-          };
-        }, function(error,rows){
-          console.log(rows);
-        });
         var parsedCSV = d3.csv.parseRows(datasetText);
         // -- TODO add top baseline row for testing
         // -- TODO add column for distance_from_baseline
         /* when create data element, just have a on change event that updates d3 data value
         */
+        var baseline = d3.select("#baseline")
+            .append("table")
+            .selectAll("tr")
+            .data(data)
 
         var table = d3.select("#table")
             .append("table")
