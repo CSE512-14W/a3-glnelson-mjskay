@@ -24,8 +24,6 @@ queue()
     .defer(d3.json, "uk.json")
     .defer(d3.csv, "whiskies.csv")
     .await (error, uk, whiskies) ->
-        window.whiskyCoords = ([w.Longitude, w.Latitude] for w in whiskies)
-    
         #draw map backgrounds
         svg.selectAll(".subunit")
             .data(topojson.feature(uk, uk.objects.subunits).features)
@@ -37,9 +35,11 @@ queue()
             .datum(topojson.mesh(uk, uk.objects.subunits, (a, b) -> a != b)) # select borders
             .attr("d", path)
             .attr("class", "subunit-boundary")
+
         #draw distilleries
+        whiskyCoords = ([w.Longitude, w.Latitude] for w in whiskies)
         svg.append("path")
-            .datum(type: "MultiPoint", coordinates: window.whiskyCoords)
+            .datum(type: "MultiPoint", coordinates: whiskyCoords)
             .attr("class", "points")
             .attr("d", path)     
 
