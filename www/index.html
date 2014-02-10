@@ -18,27 +18,31 @@
 
 body {
     font-family: Segoe UI, sans-serif;
+    padding: 0;
+    margin-top: 100px;
+    font-size: 14px;
 }
 
 .top5 {
     background: #ffffb3;
-    fill: #ffffb3;
+/*     fill: #ffffb3;  */
 }
 
 .bottom5 {
     background: #bebada;
-    fill: #bebada;
+/*     fill: #bebada;  */
 }
 
 /* map styles */
 .subunit.SCT { 
-    fill: #8dd3c7; 
+/*     fill: #8dd3c7; */
+    fill: #ddd; 
 }
 .subunit.WLS, 
 .subunit.NIR, 
 .subunit.ENG, 
 .subunit.IRL {
-    fill: #ddd;
+    fill: #eee;
 }
 
 .subunit-boundary {
@@ -116,6 +120,12 @@ circle.brushed {
   background: lightgrey;
 }
 
+table {
+    border-collapse: collapse;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
 th {
     text-align: left;
     height: 50px;
@@ -127,6 +137,15 @@ th {
     -ms-transform:     translate3d(0, 0, 0);
     -moz-transform:    translate3d(0, 0, 0);
     transform:         translate3d(0, 0, 0);
+}
+
+tbody tr:hover, tbody tr.brushed {
+    background: #eee;
+}
+
+td {
+    border-top: 1px solid #ddd; 
+    padding: 2px 5px 2px 0;
 }
 
 th.flavor {
@@ -149,6 +168,23 @@ th.flavor {
     z-index: 0;
 }
 
+#brush {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 10px 10px 0;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    z-index: 0;
+    display: none;
+}
+
+h2 {
+    margin: 30px 0 -10px 0;
+}
+
 </style>
 
 </head>
@@ -160,25 +196,39 @@ th.flavor {
       <tbody></tbody>
     </table>
     </div>
+    <div id="selected">
+     <table>
+      <thead></thead>
+      <tbody></tbody>
+    </table>
     <div id="top5">
+     <h2>Most similar scotches</h2>
      <table>
       <thead></thead>
       <tbody></tbody>
     </table>
     </div>
     <div id="bot5">
+     <h2>Least similar scotches</h2>
+     <table>
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+    <div id="full">
+     <h2>Select a scotch</h2>
      <table>
       <thead></thead>
       <tbody></tbody>
     </table>
     </div>
-    <div id="full">
-     <table>
-      <thead></thead>
-      <tbody></tbody>
-    </table>
     </div>
     <div id="table"></div>
     <div id="chart"></div>
+    <div id="brush">
+     <table>
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+    </div>
 </body>
 </html>

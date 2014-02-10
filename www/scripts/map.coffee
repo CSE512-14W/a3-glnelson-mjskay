@@ -77,15 +77,18 @@ transitionMs = 500
 Return a class to assign to the circle representing this whisky
 ###
 whiskyCircleClass = (whisky) ->
-    if whisky.selected 
+    class_ = (if whisky.selected 
         "selected" 
-    else if whisky.brushed
-        "brushed"
     else if whisky.top5
         "top5"
     else if whisky.bottom5
         "bottom5"
-    else ""
+    else "")
+    if whisky.brushed
+        class_ + " brushed"
+    else
+        class_
+
     
 
 ### 
@@ -95,6 +98,36 @@ that are mapped to distillery distance from baseline, etc.
 whiskies: array of whiskies, e.g. rows from whisky.csv
 ### 
 redrawMap = ({svg, projection}, whiskies) ->
+    #create voronoi for selection and add to clone of data
+    #this must be below the points so that points win out over the voronoi
+    #cells when clicking
+    positions = (projection([d.Longitude, d.Latitude]) for d in whiskies)
+    polygons = d3.geom.voronoi(positions)
+    #join polygons with key
+    whiskyPolygons = ({polygon: polygons[i], key: W.whiskyKey(w)}\ 
+        for w, i in whiskies when polygons[i]? and not w.selected
+        )
+    
+    g = svg.selectAll("g#voronoi")
+        .data(whiskyPolygons, (d) -> d.key)
+        .enter()
+        .append("g")
+        .attr("id", "voronoi")
+ 
+    g.append("path")
+        .attr("d", (d) -> "M" + d.polygon.join("L") + "Z")
+        .on "click", (d) ->  # click to select 
+            W.selectWhiskyByKey(d.key)
+            W.redraw()
+        .on "mouseover", (d) ->
+            W.brushWhiskyByKey(d.key)
+            W.redraw(sortChanged=false)
+        .on "mouseout", (d) ->
+            W.unbrush()
+            W.redraw(sortChanged=false)
+                
+
+
     distilleries = svg.selectAll("circle")
         .data(whiskies, W.whiskyKey)
 
@@ -115,10 +148,10 @@ redrawMap = ({svg, projection}, whiskies) ->
                 W.redraw()
             .on "mouseover", (d) ->
                 W.brushWhiskyByKey(W.whiskyKey(d))
-                W.redraw()
+                W.redraw(sortChanged=false)
             .on "mouseout", (d) ->
                 W.unbrush()
-                W.redraw()
+                W.redraw(sortChanged=false)
             .transition().duration(transitionMs)
             .attr("r", W.whiskyDistance)
             .attr("class", whiskyCircleClass)
@@ -130,24 +163,6 @@ redrawMap = ({svg, projection}, whiskies) ->
             .attr("r", 0)
             .remove()
             
-#    #create voronoi for selection and add to clone of data
-#    positions = (projection([d.Longitude, d.Latitude]) for d in whiskies)
-#    polygons = d3.geom.voronoi(positions)
-#    #join polygons with key
-#    whiskyPolygons = ({polygon: polygons[i], key: W.whiskyKey(w)}\ 
-#        for w, i in whiskies when polygons[i]?
-#        )
-#    
-#    g = svg.selectAll("g#voronoi")
-#        .data(whiskyPolygons, (d) -> d.key)
-#        .enter()
-#        .append("g")
-#        .attr("id", "voronoi")
-#
-#    g.append("path")
-#        .attr("d", (d) -> "M" + d.polygon.join("L") + "Z")
-#        .attr("stroke", "red")
-#                
 ###
 Return true if a distillery is to be shown on this inset map
 instead of the main map

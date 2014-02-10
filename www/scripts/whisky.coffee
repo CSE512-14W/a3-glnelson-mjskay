@@ -100,24 +100,24 @@ W.filteredWhiskies = () ->
 ###
 Redraw maps and table
 ###
-W.redraw = () ->
-    if W.selectedWhisky?
-        #recalcuate distances
-        flavorColumns = W.flavorColumnNames()
-        distanceColumns = W.distanceColumnNames() 
-        for whisky in W.whiskies
-            #euclidean distance
-            whisky.distance = Math.sqrt(
-                ((W.selectedWhisky[c] - whisky[c]) ** 2 for c in distanceColumns)
-                .reduce((a,b) -> a + b))
-            whisky.top5 = false
-            whisky.bottom5 = false
-    else 
-        for whisky in W.whiskies
-            whisky.distance = 3     #default when nothing selected
-            whisky.top5 = false
-            whisky.bottom5 = false
-            
+W.redraw = (sortChanged=true) ->
+    if sortChanged
+        if W.selectedWhisky?
+            #recalcuate distances
+            flavorColumns = W.flavorColumnNames()
+            distanceColumns = W.distanceColumnNames() 
+            for whisky in W.whiskies
+                #euclidean distance
+                whisky.distance = Math.sqrt(
+                    ((W.selectedWhisky[c] - whisky[c]) ** 2 for c in distanceColumns)
+                    .reduce((a,b) -> a + b))
+                whisky.top5 = false
+                whisky.bottom5 = false
+        else 
+            for whisky in W.whiskies
+                whisky.distance = 3     #default when nothing selected
+                whisky.top5 = false
+                whisky.bottom5 = false           
 
     #assign mostSimilar / leastSimilar boolean columns to top/last 5
     sortedWhiskies = (w for w in W.whiskies when not w.selected)    #clone + skip selected
@@ -128,7 +128,12 @@ W.redraw = () ->
         w.bottom5 = true
 
     W.redrawMaps(W.whiskies)
-    W.drawTables()
+    
+    #only redraw table if sort changed
+    if sortChanged
+        W.drawTables()
+
+    W.updateTableBrush()
 
 
 ###
@@ -184,7 +189,7 @@ queue()
                 Longitude: +d.Longitude,
                 Latitude: +d.Latitude,
                 distance: 3, # default value
-                selected: d.RowID == "4" # default value
+                selected: false #d.RowID == "4" # default value
                 top5: false
                 bottom5: false
               } for d in whiskies)
