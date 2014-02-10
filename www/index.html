@@ -78,6 +78,7 @@
     z-index: 1;
 }
 
+/* to do - add widths for distillery etc*/
 .whisky-table {
 }
 
@@ -107,23 +108,25 @@ circle.brushed {
 
 th {
     text-align: left;
-    height: 80px;
+    height: 50px;
+    vertical-align:bottom;
 }
 
 th.flavor {
-    max-width: 50px;
-    overflow: hidden;
-    padding-left: 10px;
-    -webkit-transform: translate(17px, 0) rotate(-45deg);
+    max-width: 55px;
+    width: 55px;
+    min-width: 55px;
+    padding-left: 0;
+    -webkit-transform: translate(4px, 0) rotate(-30deg);
+    -o-transform:      translate(4px, 0) rotate(-30deg);
+    -ms-transform:     translate(4px, 0) rotate(-30deg);
+    -moz-transform:    translate(4px, 0) rotate(-30deg);
+    transform:         translate(4px, 0) rotate(-30deg);
     -webkit-transform-origin: 0% 100%;
-    -o-transform: translate(17px, 0) rotate(-45deg);
-    -o-transform-origin: 0% 100%;
-    -ms-transform: translate(17px, 0) rotate(-45deg);
-    -ms-transform-origin: 0% 100%;
-    -moz-transform: translate(17px, 0) rotate(-45deg);
-    -moz-transform-origin: 0% 100%;
-    transform: translate(17px, 0) rotate(-45deg);
-    transform-origin: 0% 100%;
+    -o-transform-origin:      0% 100%;
+    -ms-transform-origin:     0% 100%;
+    -moz-transform-origin:    0% 100%;
+    transform-origin:         0% 100%;
     z-index: 0;
 }
 
@@ -133,6 +136,24 @@ th.flavor {
 <body>
     <div id="maps"></div>
     <div id="baseline">
+     <table>
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+    </div>
+    <div id="top5">
+     <table>
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+    </div>
+    <div id="bot5">
+     <table>
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+    </div>
+    <div id="full">
      <table>
       <thead></thead>
       <tbody></tbody>

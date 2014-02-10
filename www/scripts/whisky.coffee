@@ -12,25 +12,27 @@ Return the distance measure for distilleries on the map
 ###
 W.whiskyDistance = (whisky) -> (13 - whisky.distance)**2 / 169 * 10
 
-W.columnNames = ["RowID",
-            "Distillery",
-            "Body",
-            "Sweetness",
-            "Smoky",
-            "Medicinal",
-            "Tobacco",
-            "Honey",
-            "Spicy",
-            "Winey",
-            "Nutty",
-            "Malty",
-            "Fruity",
-            "Floral",
-            "Postcode",
-            "Longitude",
-            "Latitude",
-            "distance",
-            "selected"];
+W.columnNames = {
+            "RowID": {distance_include: false, show: true},
+            "Distillery": {distance_include: false, show: true},
+            "Body": {distance_include: true, show: true},
+            "Sweetness": {distance_include: true, show: true},
+            "Smoky": {distance_include: true, show: true},
+            "Medicinal": {distance_include: true, show: true},
+            "Tobacco": {distance_include: true, show: true},
+            "Honey": {distance_include: true, show: true},
+            "Spicy": {distance_include: true, show: true},
+            "Winey": {distance_include: true, show: true},
+            "Nutty": {distance_include: true, show: true},
+            "Malty": {distance_include: true, show: true},
+            "Fruity": {distance_include: true, show: true},
+            "Floral": {distance_include: true, show: true},
+            "Postcode": {distance_include: false, show: true},
+            "Longitude": {distance_include: false, show: true},
+            "Latitude": {distance_include: false, show: true},
+            "distance": {distance_include: false, show: true},
+            "selected": {distance_include: false, show: true}
+            }
 W.tableColumnNames = [     # dictionary
             "Distillery",
             "Body",
@@ -45,17 +47,31 @@ W.tableColumnNames = [     # dictionary
             "Malty",
             "Fruity",
             "Floral",
-            "Postcode",
-            "Longitude",
-            "Latitude",
             "distance",
             "top5"
             "bottom5"
+            "selected"
             ];
 
 
 W.flavorColumnNames = () ->
-    W.tableColumnNames[1..12]
+  W.tableColumnNames[1..12]
+
+W.distanceColumnNames = () ->
+  (key for key, value of W.columnNames when value.distance_include)
+
+###
+Convenience methods for selections of data
+###
+
+W.top5 = () ->
+  (w for w in W.whiskies when w.top5)
+
+W.bot5 = () ->
+  (w for w in W.whiskies when w.bottom5)
+
+W.filteredWhiskies = () ->
+  W.whiskies #TODO
 
 ###
 Redraw maps and table
@@ -87,7 +103,7 @@ W.redraw = () ->
         w.bottom5 = true
 
     W.redrawMaps(W.whiskies)
-    W.drawTable("#baseline", W.whiskies, W.tableColumnNames)
+    W.drawTables()
 
 
 ###
@@ -150,4 +166,5 @@ queue()
         
         W.setupTable()
         W.setupMaps(uk)
+        #W.redraw() #tried to fix page load blank tables, causes type error
 

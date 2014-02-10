@@ -41,7 +41,10 @@
   #
   # assumes the div already hase table, thead, tbody elements in the html
   
-W.drawTable = (div, data, columns) ->
+W.drawFull = () ->
+    div = "#full"
+    data = W.whiskies
+    columns = W.tableColumnNames
     table = d3.select(div).select("table")
                 .attr("class", "whisky-table")
     thead = table.select("thead")
@@ -51,9 +54,12 @@ W.drawTable = (div, data, columns) ->
     selectedWhiskies = (w for w in data when w.selected)
     unselectedWhiskies = (w for w in data when not w.selected)
     
+    #delete table before redraw
+    thead.selectAll("tr").remove()
+    tbody.selectAll("tr").remove()
+ 
     # append the header row
     # TODO fix, 
-    thead.selectAll("tr").remove()
     th = thead.append("tr")
         .selectAll("th")
         .data(columns)
@@ -67,7 +73,6 @@ W.drawTable = (div, data, columns) ->
         .attr("class", "flavor")
     
     # create a row for each object in the data
-    tbody.selectAll("tr").remove()
     addWhiskies = (whiskies) ->
         rows = tbody.selectAll("tr")
             .data(data, W.whiskyKey)
@@ -99,6 +104,57 @@ W.drawTable = (div, data, columns) ->
     addWhiskies(selectedWhiskies)
     addWhiskies(unselectedWhiskies)
 
+W.drawTop5 = (div, data, columns) ->
+  draw5Table("#top5", W.top5(), W.tableColumnNames)
+
+W.drawBot5 = (div, data, columns) ->
+  draw5Table("#bot5", W.bot5(), W.tableColumnNames)
+
+draw5Table = (div, data, columns) ->
+    table = d3.select(div).select("table")
+                .attr("class", "whisky-table")
+    thead = table.select("thead")
+    tbody = table.select("tbody")
+
+    
+    # append the header row
+    # TODO fix, 
+    thead.selectAll("tr").remove()
+    thead.append("tr")
+        .selectAll("th")
+        .data(columns)
+        .enter()
+        .append("th")
+            .text((column) -> column)
+    
+    # delete all rows, would be nice to find a way to transition
+    tbody.selectAll("tr").remove()
+
+    # create a row for each object in the data
+    rows = tbody.selectAll("tr")
+        .data(data, W.whiskyKey)
+        .enter()
+        .append("tr")
+        .sort((a, b) -> a.distance - b.distance)
+  
+    # create a cell in each row for each column
+    cells = rows.selectAll("td")
+        .data (row) ->
+            columns.map (column) ->
+                column: column
+                value: row[column]
+        .enter()
+        .append("td")
+        .html((d) -> d.value)
+        .on "click", () ->  # click to select 
+            W.selectWhiskyByKey(W.whiskyKey(d3.select(this.parentNode).datum()))
+            W.redraw()
+         
+W.drawTables = () ->
+    W.drawFull()
+    W.drawTop5()
+    W.drawBot5()
+  
 W.setupTable = () ->        
     # for some reason right now none of this code is getting called here
     console.log("setup table was called");
@@ -109,7 +165,7 @@ W.setupTable = () ->
     # redrawBaseline(4)# default is Ardbeg               
 
     # draw table
-    W.drawTable("#baseline", W.whiskies, W.tableColumnNames)
+    W.drawTables()
 
 
 
