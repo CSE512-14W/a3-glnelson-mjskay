@@ -47,8 +47,6 @@ W.tableColumnNames = [     # dictionary
             "Malty",
             "Fruity",
             "Floral",
-            "Longitude",
-            "Latitude",
             "distance",
             "top5"
             "bottom5"
@@ -136,4 +134,5 @@ queue()
         
         W.setupTable()
         W.setupMaps(uk)
+        #W.redraw() #tried to fix page load blank tables, causes type error
 
