@@ -19,7 +19,7 @@
 body {
     font-family: Segoe UI, sans-serif;
     padding: 0;
-    margin-top: 100px;
+    margin: 100px 0 0 0;
     font-size: 14px;
 }
 
@@ -168,6 +168,7 @@ th.flavor {
     z-index: 0;
 }
 
+/*table div styles*/
 #brush {
     position: fixed;
     top: 0;
@@ -181,8 +182,20 @@ th.flavor {
     display: none;
 }
 
+#top5, #bot5, #selected {
+    display: none; 
+}
+
 h2 {
     margin: 30px 0 -10px 0;
+}
+
+#selected {
+    background: #eee;
+}
+
+#top5, #bot5, #selected, #full {
+    padding-left: 10px;
 }
 
 </style>
@@ -197,10 +210,12 @@ h2 {
     </table>
     </div>
     <div id="selected">
+     <h2>Selected scotch</h2>
      <table>
       <thead></thead>
       <tbody></tbody>
     </table>
+    </div>
     <div id="top5">
      <h2>Most similar scotches</h2>
      <table>
@@ -214,13 +229,13 @@ h2 {
       <thead></thead>
       <tbody></tbody>
     </table>
+    </div>
     <div id="full">
      <h2>Select a scotch</h2>
      <table>
       <thead></thead>
       <tbody></tbody>
     </table>
-    </div>
     </div>
     <div id="table"></div>
     <div id="chart"></div>

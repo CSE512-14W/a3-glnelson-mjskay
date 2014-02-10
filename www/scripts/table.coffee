@@ -42,16 +42,23 @@
   # assumes the div already hase table, thead, tbody elements in the html
   
 W.drawFull = () ->
+    drawTable("#full", W.whiskies, W.columnNames)
+
+W.drawSelected = () ->
     if W.selectedWhisky?
-        drawTable("#full", [W.selectedWhisky], W.columnNames)
+        d3.select("#full").select("h2").text("All scotches")
+        d3.select("#selected").style("display", "block")
+        d3.select("#top5").style("display", "block")
+        d3.select("#bot5").style("display", "block")
+        drawTable("#selected", [W.selectedWhisky], W.columnNames)
+        drawTable("#top5", W.top5(), W.columnNames)
+        drawTable("#bot5", W.bot5(), W.columnNames)
     else
-        drawTable("#full", W.whiskies, W.columnNames)
-
-W.drawTop5 = () ->
-    drawTable("#top5", W.top5(), W.columnNames)
-
-W.drawBot5 = () ->
-    drawTable("#bot5", W.bot5(), W.columnNames)
+        d3.select("#full").select("h2").text("Select a scotch")
+        d3.select("#selected").style("display", "none")
+        d3.select("#top5").style("display", "none")
+        d3.select("#bot5").style("display", "none")
+        
 
 
 W.drawBrushTable = () ->
@@ -144,9 +151,8 @@ drawTable = (div, data, columns) ->
 
          
 W.drawTables = () ->
+    W.drawSelected()
     W.drawFull()
-    W.drawTop5()
-    W.drawBot5()
     
 W.updateTableBrush = () ->
     W.drawBrushTable()
