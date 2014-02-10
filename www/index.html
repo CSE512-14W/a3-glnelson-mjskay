@@ -35,7 +35,7 @@
                         "Latitude",
                         "distance",
                         "selected"];
-        var tableColumnNames = [
+        var tableColumnNames = [     // dictionary
                         "Distillery",
                         "Body",
                         "Sweetness",
@@ -128,7 +128,7 @@
                 .append("td")
                 .html(function(d) { return d.value; })
                 .on("click", function(){ // click to select 
-                  console.log(d3.select(this.parentNode).datum["RowID"])
+                  console.log(d3.select(this.parentNode).datum()["RowID"])
                   // don't select datum here to change value
                   // instead change value in javascript var and call update function
                 })
