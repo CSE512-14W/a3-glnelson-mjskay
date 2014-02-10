@@ -47,7 +47,6 @@ W.tableColumnNames = [     # dictionary
             "Malty",
             "Fruity",
             "Floral",
-            "Postcode",
             "Longitude",
             "Latitude",
             "distance",
@@ -64,10 +63,10 @@ Convenience methods for selections of data
 ###
 
 W.top5 = () ->
-  (w for w in data when w.top5)
+  (w for w in W.whiskies when w.top5)
 
 W.bot5 = () ->
-  (w for w in data when w.top5)
+  (w for w in W.whiskies when w.top5)
 
 W.filteredWhiskies = () ->
   W.whiskies #TODO
@@ -89,7 +88,7 @@ W.redraw = () ->
     #assign mostSimilar / leastSimilar boolean columns to top/last 5
     sortedWhiskies = W.whiskies.slice(0)    #clone
     sortedWhiskies.sort((a, b) -> a.distance - b.distance)
-    for w in sortedWhiskies[0..4]
+    for w in sortedWhiskies[1..5]
         w.top5 = true
     for w in sortedWhiskies[-5..]
         w.bottom5 = true

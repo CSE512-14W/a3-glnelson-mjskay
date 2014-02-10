@@ -92,8 +92,6 @@ W.drawTop5 = (div, data, columns) ->
     thead = table.select("thead")
     tbody = table.select("tbody")
 
-    #remove selected whiskies from the table
-    top5 = (w for w in data when w.top5)
     
     # append the header row
     # TODO fix, 
@@ -111,7 +109,6 @@ W.drawTop5 = (div, data, columns) ->
         .sort((a, b) -> a.distance - b.distance)
         .enter()
         .append("tr")
-        .exit().remove()
   
     # create a cell in each row for each column
     cells = rows.selectAll("td")
