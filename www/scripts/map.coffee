@@ -70,6 +70,9 @@ insets = [
 ]
 
 
+#map transition duration in ms
+transitionMs = 500
+
 ### 
 Draw/redraw map points given a set of whiskies. Updates attributes
 that are mapped to distillery distance from baseline, etc.
@@ -82,7 +85,7 @@ redrawMap = ({svg, projection}, whiskies) ->
 
     #update existing distilleries
     distilleries
-        .transition()
+        .transition().duration(transitionMs)
         .attr("r", W.whiskyDistance)
         .attr("class", (d) -> 
             if d.selected 
@@ -95,7 +98,7 @@ redrawMap = ({svg, projection}, whiskies) ->
             .attr("cx", (d) -> projection([d.Longitude, d.Latitude])[0])
             .attr("cy", (d) -> projection([d.Longitude, d.Latitude])[1])
             .attr("r", 0)
-            .transition()
+            .transition().duration(transitionMs)
             .attr("r", W.whiskyDistance)
             .attr("class", (d) -> 
                 if d.selected 
@@ -105,17 +108,48 @@ redrawMap = ({svg, projection}, whiskies) ->
     #remove exiting ones
     distilleries
         .exit()
-            .transition()
+            .transition().duration(transitionMs)
             .attr("r", 0)
             .remove()
+            
+    #create voronoi for selection and add to clone of data
+    positions = (projection([d.Longitude, d.Latitude]) for d in whiskies)
+    polygons = d3.geom.voronoi(positions)
+    #join polygons with key
+    whiskyPolygons = ({polygon: polygons[i], key: W.whiskyKey(w)}\ 
+        for w, i in whiskies when polygons[i]?
+        )
     
+    g = svg.selectAll("g#voronoi")
+        .data(whiskyPolygons, (d) -> d.key)
+        .enter()
+        .append("g")
+        .attr("id", "voronoi")
+
+    g.append("path")
+        .attr("d", (d) -> "M" + d.polygon.join("L") + "Z")
+        .attr("stroke", "red")
+        .on "click", (d) ->  # click to select 
+            W.selectWhiskyByKey(d.key)
+            W.redraw()
+        .on "mouseover", (d) ->
+            #d3.select("h2 span").text(d.name)
+            console.log(d.key)
+                
+###
+Return true if a distillery is to be shown on this inset map
+instead of the main map
+###
+isWhiskyInInset = (whisky, map) ->
+    return map.p0[0] < whisky.Longitude < map.p1[0] and map.p0[1] < whisky.Latitude < map.p1[1]
+
 ###
 Return true if a distillery is to be shown on an inset map
 instead of the main map
 ###
-isWhiskyInInset = (whisky) ->
+isWhiskyInAnyInset = (whisky) ->
     for map in insets
-        if map.p0[0] < whisky.Longitude < map.p1[0] and map.p0[1] < whisky.Latitude < map.p1[1]
+        if isWhiskyInInset(whisky, map)
             return true
     false
     
@@ -124,12 +158,14 @@ Redraw all maps / insets
 ###
 W.redrawMaps = (whiskies) -> 
     #first, draw main map with points in insets omitted
-    whiskySubset = (w for w in whiskies when not isWhiskyInInset(w))
+    whiskySubset = (w for w in whiskies when not isWhiskyInAnyInset(w))
     redrawMap(scotland, whiskySubset)
 
     #then, draw inset maps
-    for map, i in insets 
-        redrawMap(map, whiskies)
+    for map in insets 
+        # restrict point set if we are an inset
+        whiskySubset = (w for w in whiskies when isWhiskyInInset(w, map))
+        redrawMap(map, whiskySubset)
             
 ###
 Draw a given map (basic geometry, no data)
@@ -188,10 +224,6 @@ W.setupMaps = (uk) ->
         scotland.svg.append("path")
             .attr("d", d3.svg.line()(line))
             .attr("class", "inset-zoom-line")
-        
-        
-    # 102,6
-    # 239, 173
     
 
     #DISTILLERIES
