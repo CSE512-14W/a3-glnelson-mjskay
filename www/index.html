@@ -7,9 +7,6 @@
 	<script src="scripts/queue.v1.min.js"></script>
 	<script src="scripts/topojson.v1.min.js"></script>
 	<script src="scripts/coffee-script.js"></script>
-<!--     <script type="text/javascript"> 
-    window.W = W = {}
-<!--     </script> -->
     <script type="text/javascript">
     var W = {};
     </script>
@@ -18,6 +15,10 @@
     <script type="text/coffeescript" src="scripts/whisky.coffee"></script>
 
 <style>
+
+body {
+    font-family: Segoe UI, sans-serif;
+}
 
 .top5 {
     background: #ffffb3;
@@ -111,18 +112,26 @@ th {
     height: 50px;
     vertical-align:bottom;
     width: 150px;
+    font-weight: bold;
+    -webkit-transform: translate3d(0, 0, 0);
+    -o-transform:      translate3d(0, 0, 0);
+    -ms-transform:     translate3d(0, 0, 0);
+    -moz-transform:    translate3d(0, 0, 0);
+    transform:         translate3d(0, 0, 0);
 }
 
 th.flavor {
+    font-weight: normal;
     max-width: 55px;
     width: 55px;
     min-width: 55px;
     padding-left: 0;
-    -webkit-transform: translate(4px, 0) rotate(-30deg);
-    -o-transform:      translate(4px, 0) rotate(-30deg);
-    -ms-transform:     translate(4px, 0) rotate(-30deg);
-    -moz-transform:    translate(4px, 0) rotate(-30deg);
-    transform:         translate(4px, 0) rotate(-30deg);
+    /* using transform3d to fix ugly text on rotation */
+    -webkit-transform: translate3d(4px, 0, 0) rotate(-30deg);
+    -o-transform:      translate3d(4px, 0, 0) rotate(-30deg);
+    -ms-transform:     translate3d(4px, 0, 0) rotate(-30deg);
+    -moz-transform:    translate3d(4px, 0, 0) rotate(-30deg);
+    transform:         translate3d(4px, 0, 0) rotate(-30deg);
     -webkit-transform-origin: 0% 100%;
     -o-transform-origin:      0% 100%;
     -ms-transform-origin:     0% 100%;
