@@ -42,13 +42,25 @@
   # assumes the div already hase table, thead, tbody elements in the html
   
 W.drawFull = () ->
-    drawTable("#full", W.whiskies, W.tableColumnNames)
+    if W.selectedWhisky?
+        drawTable("#full", [W.selectedWhisky], W.tableColumnNames)
+    else
+        drawTable("#full", W.whiskies, W.tableColumnNames)
     
-W.drawTop5 = (div, data, columns) ->
+    
+W.drawTop5 = () ->
     drawTable("#top5", W.top5(), W.tableColumnNames)
 
-W.drawBot5 = (div, data, columns) ->
+W.drawBot5 = () ->
     drawTable("#bot5", W.bot5(), W.tableColumnNames)
+
+W.drawBrushTable = () ->
+    if W.brushedWhisky?
+        d3.select("#brush").style("display", "block")
+        drawTable("#brush", [W.brushedWhisky], W.tableColumnNames)
+    else
+        d3.select("#brush").style("display", "none")
+        
 
 drawTable = (div, data, columns) ->
     table = d3.select(div).select("table")
@@ -98,13 +110,24 @@ drawTable = (div, data, columns) ->
         # create non-flavor cells
         cells.filter((d) -> d.column not in flavorColumnNames) 
             .html((d) -> d.value)
-            .on "click", () ->  # click to select 
-                W.selectWhiskyByKey(W.whiskyKey(d3.select(this.parentNode).datum()))
-                W.redraw()
             
         # create flavor cells
         cells.filter((d) -> d.column in flavorColumnNames) 
             .html((d) -> '<div class="flavor-bar" style="width: ' + (d.value / 4 * 100) + '%; height: 100%;">&nbsp;</div>')
+            
+        # click to select
+        cells.on "click", () -> 
+            W.selectWhiskyByKey(W.whiskyKey(d3.select(this.parentNode).datum()))
+            W.redraw()
+            
+        # brushing
+        cells.on "mouseover", () ->
+            W.brushWhiskyByKey(W.whiskyKey(d3.select(this.parentNode).datum()))
+            W.redraw(sortChanged=false)
+            
+        cells.on "mouseout", () ->
+            W.unbrush()
+            W.redraw(sortChanged=false)
             
 
     addWhiskies(selectedWhiskies)
@@ -115,6 +138,19 @@ W.drawTables = () ->
     W.drawFull()
     W.drawTop5()
     W.drawBot5()
+    
+W.updateTableBrush = () ->
+    W.drawBrushTable()
+    d3.selectAll(".whisky-table")
+        .selectAll("tbody")
+        .selectAll("tr")
+        .data(W.whiskies, W.whiskyKey)
+        .attr "class", (w) ->
+            if w.brushed
+                "brushed"
+            else
+                ""
+    
   
 W.setupTable = () ->        
     # for some reason right now none of this code is getting called here

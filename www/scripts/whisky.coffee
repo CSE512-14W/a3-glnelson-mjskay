@@ -72,22 +72,23 @@ W.filteredWhiskies = () ->
 ###
 Redraw maps and table
 ###
-W.redraw = () ->
-    if W.selectedWhisky?
-        #recalcuate distances
-        flavorColumns = W.flavorColumnNames() 
-        for whisky in W.whiskies
-            #euclidean distance
-            whisky.distance = Math.sqrt(
-                ((W.selectedWhisky[c] - whisky[c]) ** 2 for c in flavorColumns)
-                .reduce((a,b) -> a + b))
-            whisky.top5 = false
-            whisky.bottom5 = false
-    else 
-        for whisky in W.whiskies
-            whisky.distance = 3     #default when nothing selected
-            whisky.top5 = false
-            whisky.bottom5 = false
+W.redraw = (sortChanged=true) ->
+    if sortChanged
+        if W.selectedWhisky?
+            #recalcuate distances
+            flavorColumns = W.flavorColumnNames() 
+            for whisky in W.whiskies
+                #euclidean distance
+                whisky.distance = Math.sqrt(
+                    ((W.selectedWhisky[c] - whisky[c]) ** 2 for c in flavorColumns)
+                    .reduce((a,b) -> a + b))
+                whisky.top5 = false
+                whisky.bottom5 = false
+        else 
+            for whisky in W.whiskies
+                whisky.distance = 3     #default when nothing selected
+                whisky.top5 = false
+                whisky.bottom5 = false
             
 
     #assign mostSimilar / leastSimilar boolean columns to top/last 5
@@ -99,7 +100,12 @@ W.redraw = () ->
         w.bottom5 = true
 
     W.redrawMaps(W.whiskies)
-    W.drawTables()
+    
+    #only redraw table if sort changed
+    if sortChanged
+        W.drawTables()
+
+    W.updateTableBrush()
 
 
 ###
