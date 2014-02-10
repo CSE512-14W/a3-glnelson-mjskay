@@ -84,6 +84,10 @@ redrawMap = ({svg, projection}, whiskies) ->
     distilleries
         .transition()
         .attr("r", W.whiskyDistance)
+        .attr("class", (d) -> 
+            if d.selected 
+                "selected" 
+            else "")
 
     #create non-existing ones    
     distilleries
@@ -93,6 +97,10 @@ redrawMap = ({svg, projection}, whiskies) ->
             .attr("r", 0)
             .transition()
             .attr("r", W.whiskyDistance)
+            .attr("class", (d) -> 
+                if d.selected 
+                    "selected" 
+                else "")
             
     #remove exiting ones
     distilleries

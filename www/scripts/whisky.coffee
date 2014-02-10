@@ -8,9 +8,9 @@ Return the key for joining whisky data in d3
 W.whiskyKey = (whisky) -> whisky.RowID
 
 ###
-Return the distance measure for ordering a given whisky
+Return the distance measure for distilleries on the map
 ###
-W.whiskyDistance = (whisky) -> Math.random() * 2 + 1    #TODO: properly map this to distance
+W.whiskyDistance = (whisky) -> (13 - whisky.distance)**2 / 169 * 10
 
 W.columnNames = ["RowID",
             "Distillery",
@@ -48,7 +48,10 @@ W.tableColumnNames = [     # dictionary
             "Postcode",
             "Longitude",
             "Latitude",
-            "distance"];
+            "distance",
+            "top5"
+            "bottom5"
+            ];
 
 
 W.flavorColumnNames = () ->
@@ -65,6 +68,16 @@ W.redraw = () ->
         whisky.distance = Math.sqrt(
             ((W.selectedWhisky[c] - whisky[c]) ** 2 for c in flavorColumns)
             .reduce((a,b) -> a + b))
+        whisky.top5 = false
+        whisky.bottom5 = false
+
+    #assign mostSimilar / leastSimilar boolean columns to top/last 5
+    sortedWhiskies = W.whiskies.slice(0)    #clone
+    sortedWhiskies.sort((a, b) -> a.distance - b.distance)
+    for w in sortedWhiskies[0..4]
+        w.top5 = true
+    for w in sortedWhiskies[-5..]
+        w.bottom5 = true
 
     W.redrawMaps(W.whiskies)
     W.drawTable("#baseline", W.whiskies, W.tableColumnNames)
@@ -101,8 +114,10 @@ queue()
                 Postcode: d.Postcode,
                 Longitude: +d.Longitude,
                 Latitude: +d.Latitude,
-                distance: +d.Latitude, # default value
+                distance: 3, # default value
                 selected: d.RowID == "4" # default value
+                top5: false
+                bottom5: false
               } for d in whiskies)
         
         W.setupTable()
