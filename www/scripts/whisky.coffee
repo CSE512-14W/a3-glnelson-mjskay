@@ -162,7 +162,7 @@ W.redraw = (sortChanged=true) ->
     for w in sortedWhiskies[-5..]
         w.bottom5 = true
 
-    W.redrawMaps(W.whiskies)
+    W.redrawMaps(W.filteredWhiskies())
     
     #only redraw table if sort changed
     if sortChanged

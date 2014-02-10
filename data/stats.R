@@ -7,6 +7,8 @@ library(rgdal)	#spTransform
 library(ggplot2)
 library(stringr)
 library(reshape2)
+library(hexbin)
+library(plyr)
 melt.data.frame = reshape2:::melt.data.frame	#fix conflict of reshape2 with reshape
 
 frame_files <- lapply(sys.frames(), function(x) x$ofile)
@@ -17,7 +19,7 @@ DATA_PATH = FILE_PATH
 
 
 #read in data
-df = read.csv(fjoin(DATA_PATH, "whiskies.txt"))
+df = read.csv(paste(DATA_PATH, "whiskies.txt", sep="/"))
 
 #clean up post code (has whitespace that needs trimming)
 df$Postcode = factor(str_trim(as.character(df$Postcode)))
@@ -34,7 +36,7 @@ df = cbind(df@data, df@coords)
 names(df)[16:17] = c("Longitude", "Latitude")
 
 #write out cleaned data
-write.csv(df, fjoin(DATA_PATH, "whiskies.csv"), row.names=FALSE)
+write.csv(df, paste(DATA_PATH, "whiskies.csv", sep="/"), row.names=FALSE)
 
 #load map
 md = map_data("world", region="UK")
