@@ -43,16 +43,18 @@
   
 W.drawTable = (div, data, columns) ->
     table = d3.select(div).select("table")
-                .attr("style", "margin-left: 250px")
+                .attr("class", "whisky-table")
     thead = table.select("thead")
     tbody = table.select("tbody")
 
     #remove selected whiskies from the table
-    data = (w for w in data when not w.selected)
+    selectedWhiskies = (w for w in data when w.selected)
+    unselectedWhiskies = (w for w in data when not w.selected)
     
     # append the header row
     # TODO fix, 
-    thead.selectAll("tr")
+    thead.selectAll("tr").remove()
+    thead.append("tr")
         .selectAll("th")
         .data(columns)
         .enter()
@@ -61,27 +63,28 @@ W.drawTable = (div, data, columns) ->
     
     # create a row for each object in the data
     tbody.selectAll("tr").remove()
-    rows = tbody.selectAll("tr")
-        .data(data, W.whiskyKey)
-        .enter()
-        .append("tr")
-        .sort((a, b) -> a.distance - b.distance)
+    addWhiskies = (whiskies) ->
+        rows = tbody.selectAll("tr")
+            .data(data, W.whiskyKey)
+            .enter()
+            .append("tr")
+            .sort((a, b) -> a.distance - b.distance)
     
-    
-    # create a cell in each row for each column
-    cells = rows.selectAll("td")
-        .data (row) ->
-            columns.map (column) ->
-                column: column
-                value: row[column]
-        .enter()
-        .append("td")
-        .html((d) -> d.value)
-        .on "click", () ->  # click to select 
-             console.log(d3.select(this.parentNode).datum()["RowID"])
-              # don't select datum here to change value
-              # instead change value in javascript var and call update function
+        # create a cell in each row for each column
+        cells = rows.selectAll("td")
+            .data (row) ->
+                columns.map (column) ->
+                    column: column
+                    value: row[column]
+            .enter()
+            .append("td")
+            .html((d) -> d.value)
+            .on "click", () ->  # click to select 
+                W.selectWhiskyByKey(W.whiskyKey(d3.select(this.parentNode).datum()))
+                W.redraw()
 
+    addWhiskies(selectedWhiskies)
+    addWhiskies(unselectedWhiskies)
 
 W.setupTable = () ->        
     # for some reason right now none of this code is getting called here

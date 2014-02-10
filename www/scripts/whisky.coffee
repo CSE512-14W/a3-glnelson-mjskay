@@ -51,13 +51,33 @@ W.tableColumnNames = [     # dictionary
             "distance"];
 
 
+W.flavorColumnNames = () ->
+    W.tableColumnNames[1..12]
+
 ###
 Redraw maps and table
 ###
 W.redraw = () ->
+    #recalcuate distances
+    flavorColumns = W.flavorColumnNames() 
+    for whisky in W.whiskies
+        #euclidean distance
+        whisky.distance = Math.sqrt(
+            ((W.selectedWhisky[c] - whisky[c]) ** 2 for c in flavorColumns)
+            .reduce((a,b) -> a + b))
+
     W.redrawMaps(W.whiskies)
     W.drawTable("#baseline", W.whiskies, W.tableColumnNames)
 
+
+###
+Given a key, select that whisky (and only that whisky)
+###
+W.selectWhiskyByKey = (key) ->
+    for whisky in W.whiskies
+        whisky.selected = W.whiskyKey(whisky) == key
+        if whisky.selected
+            W.selectedWhisky = whisky
 
 queue()
     .defer(d3.json, "uk.json")
@@ -82,7 +102,7 @@ queue()
                 Longitude: +d.Longitude,
                 Latitude: +d.Latitude,
                 distance: +d.Latitude, # default value
-                selected: false # default value
+                selected: d.RowID == "4" # default value
               } for d in whiskies)
         
         W.setupTable()
