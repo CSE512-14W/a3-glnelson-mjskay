@@ -71,7 +71,10 @@ drawTable = (div, data, columns) ->
         .data(columns)
         .enter()
         .append("th")
-            .text((column) -> column)
+        .text((column) -> column)
+        .on "click", () ->  # click to toggle 
+           W.toggleIncludeColumn(W.columnKey(d3.select(this).datum()))
+           W.redraw()
          
     # set up flavor headings   
     flavorColumnNames = W.flavorColumnNames()

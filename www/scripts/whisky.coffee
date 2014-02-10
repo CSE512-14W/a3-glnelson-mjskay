@@ -18,27 +18,27 @@ Return the key for joining column data in d3
 W.columnKey = (column) -> column.name
 
 
-W.columnNames = {
-            "RowID": {distance_include: false, show: true},
-            "Distillery": {distance_include: false, show: true},
-            "Body": {distance_include: true, show: true},
-            "Sweetness": {distance_include: true, show: true},
-            "Smoky": {distance_include: true, show: true},
-            "Medicinal": {distance_include: true, show: true},
-            "Tobacco": {distance_include: true, show: true},
-            "Honey": {distance_include: true, show: true},
-            "Spicy": {distance_include: true, show: true},
-            "Winey": {distance_include: true, show: true},
-            "Nutty": {distance_include: true, show: true},
-            "Malty": {distance_include: true, show: true},
-            "Fruity": {distance_include: true, show: true},
-            "Floral": {distance_include: true, show: true},
-            "Postcode": {distance_include: false, show: true},
-            "Longitude": {distance_include: false, show: true},
-            "Latitude": {distance_include: false, show: true},
-            "distance": {distance_include: false, show: true},
-            "selected": {distance_include: false, show: true}
-            }
+W.columnNames = [
+  {name: "RowID", distance_include: false, show: true, more: false, less: false, same:false},
+  {name: "Distillery", distance_include: false, show: true, more: false, less: false, same:false},
+  {name: "Body", distance_include: true, show: true, more: false, less: false, same:false},
+  {name: "Sweetness", distance_include: true, show: true, more: false, less: false, same:false},
+  {name: "Smoky", distance_include: true, show: true, more: false, less: false, same:false},
+  {name: "Medicinal", distance_include: true, show: true, more: false, less: false, same:false},
+  {name: "Tobacco", distance_include: true, show: true, more: false, less: false, same:false},
+  {name: "Honey", distance_include: true, show: true, more: false, less: false, same:false},
+  {name: "Spicy", distance_include: true, show: true, more: false, less: false, same:false},
+  {name: "Winey", distance_include: true, show: true, more: false, less: false, same:false},
+  {name: "Nutty", distance_include: true, show: true, more: false, less: false, same:false},
+  {name: "Malty", distance_include: true, show: true, more: false, less: false, same:false},
+  {name: "Fruity", distance_include: true, show: true, more: false, less: false, same:false},
+  {name: "Floral", distance_include: true, show: true, more: false, less: false, same:false},
+  {name: "Postcode", distance_include: false, show: true, more: false, less: false, same:false},
+  {name: "Longitude", distance_include: false, show: true, more: false, less: false, same:false},
+  {name: "Latitude", distance_include: false, show: true, more: false, less: false, same:false},
+  {name: "distance", distance_include: false, show: true, more: false, less: false, same:false},
+  {name: "selected", distance_include: false, show: true, more: false, less: false, same:false}];
+
 W.tableColumnNames = [     # dictionary
             "Distillery",
             "Body",
@@ -60,7 +60,7 @@ W.flavorColumnNames = () ->
   W.tableColumnNames[1..12]
 
 W.distanceColumnNames = () ->
-  (key for key, value of W.columnNames when value.distance_include)
+  (W.columnKey(c) for c in W.columnNames when c.distance_include)
 
 ###
 Convenience methods for selections of data
@@ -81,11 +81,12 @@ Redraw maps and table
 W.redraw = () ->
     if W.selectedWhisky?
         #recalcuate distances
-        flavorColumns = W.flavorColumnNames() 
+        flavorColumns = W.flavorColumnNames()
+        distanceColumns = W.distanceColumnNames() 
         for whisky in W.whiskies
             #euclidean distance
             whisky.distance = Math.sqrt(
-                ((W.selectedWhisky[c] - whisky[c]) ** 2 for c in flavorColumns)
+                ((W.selectedWhisky[c] - whisky[c]) ** 2 for c in distanceColumns)
                 .reduce((a,b) -> a + b))
             whisky.top5 = false
             whisky.bottom5 = false
