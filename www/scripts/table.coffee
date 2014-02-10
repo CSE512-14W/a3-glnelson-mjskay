@@ -113,8 +113,8 @@ drawTable = (div, data, columns) ->
             .html((d) -> '<div class="flavor-bar" style="width: ' + (d.value / 4 * 100) + '%; height: 100%;">&nbsp;</div>')
             
         # grey out ignored
-        cells.filter((column) -> not column.distance_include and column.flavor)
-        .classed("ignored-column", true)
+        cells.filter((d) -> (not d.column.distance_include)  and d.column.flavor)
+        .attr("class", "ignored-cell")
 
     addWhiskies(selectedWhiskies)
     addWhiskies(unselectedWhiskies)
