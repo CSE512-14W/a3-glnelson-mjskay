@@ -74,7 +74,8 @@
     bottom: 0;
     background: white;
     padding: 0 10px;
-    border-left: 1px solid #ddd
+    border-left: 1px solid #ddd;
+    z-index: 1;
 }
 
 .whisky-table {
@@ -99,6 +100,33 @@ circle.brushed {
     pointer-events: all;
     stroke: none;
 }
+
+.flavor-bar {
+    background: #8dd3c7;
+}
+
+th {
+    text-align: left;
+    height: 80px;
+}
+
+th.flavor {
+    max-width: 50px;
+    overflow: hidden;
+    padding-left: 10px;
+    -webkit-transform: translate(17px, 0) rotate(-45deg);
+    -webkit-transform-origin: 0% 100%;
+    -o-transform: translate(17px, 0) rotate(-45deg);
+    -o-transform-origin: 0% 100%;
+    -ms-transform: translate(17px, 0) rotate(-45deg);
+    -ms-transform-origin: 0% 100%;
+    -moz-transform: translate(17px, 0) rotate(-45deg);
+    -moz-transform-origin: 0% 100%;
+    transform: translate(17px, 0) rotate(-45deg);
+    transform-origin: 0% 100%;
+    z-index: 0;
+}
+
 </style>
 
 </head>

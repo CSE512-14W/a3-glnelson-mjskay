@@ -54,12 +54,17 @@ W.drawTable = (div, data, columns) ->
     # append the header row
     # TODO fix, 
     thead.selectAll("tr").remove()
-    thead.append("tr")
+    th = thead.append("tr")
         .selectAll("th")
         .data(columns)
         .enter()
         .append("th")
             .text((column) -> column)
+         
+    # set up flavor headings   
+    flavorColumnNames = W.flavorColumnNames()
+    th.filter((column) -> column in flavorColumnNames)
+        .attr("class", "flavor")
     
     # create a row for each object in the data
     tbody.selectAll("tr").remove()
@@ -78,10 +83,18 @@ W.drawTable = (div, data, columns) ->
                     value: row[column]
             .enter()
             .append("td")
+            
+        # create non-flavor cells
+        cells.filter((d) -> d.column not in flavorColumnNames) 
             .html((d) -> d.value)
             .on "click", () ->  # click to select 
                 W.selectWhiskyByKey(W.whiskyKey(d3.select(this.parentNode).datum()))
                 W.redraw()
+            
+        # create flavor cells
+        cells.filter((d) -> d.column in flavorColumnNames) 
+            .html((d) -> '<div class="flavor-bar" style="width: ' + (d.value / 4 * 100) + '%; height: 100%;">&nbsp;</div>')
+            
 
     addWhiskies(selectedWhiskies)
     addWhiskies(unselectedWhiskies)
