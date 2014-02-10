@@ -56,6 +56,16 @@ W.includeAll = (c) ->
 
 ###
 
+W.columnFilterName = (c) ->
+  if c.more
+    "> "+c.name
+  else if c.same
+    "= "+c.name
+  else if c.less
+    "< "+c.name
+  else
+    c.name
+
 W.clearFilter = (c) ->
   c.more = false
   c.less = false
