@@ -21,7 +21,7 @@ W.columnKey = (column) -> column.name
 W.columnNames = [
   {name: "RowID", distance_include: false, flavor: false, show: false, more: false, less: false, same:false, toggle_state:0},
   {name: "Distillery", distance_include: false, flavor: false, show: true, more: false, less: false, same:false, toggle_state:0},
-  {name: "Body", flavor: true, distance_include: true, show: true, more: true, less: false, same:false, toggle_state:0},
+  {name: "Body", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
   {name: "Sweetness", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
   {name: "Smoky", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
   {name: "Medicinal", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
@@ -37,6 +37,8 @@ W.columnNames = [
   {name: "Longitude", distance_include: false, flavor: false, show: false, more: false, less: false, same:false, toggle_state:0},
   {name: "Latitude", distance_include: false, flavor: false, show: false, more: false, less: false, same:false, toggle_state:0},
   {name: "distance", flavor: false, distance_include: false, show: true, more: false, less: false, same:false, toggle_state:0},
+  {name: "top5", flavor: false, distance_include: false, show: true, more: false, less: false, same:false, toggle_state:0},
+  {name: "bottom5", flavor: false, distance_include: false, show: true, more: false, less: false, same:false, toggle_state:0},
   {name: "selected", flavor: false, distance_include: false,  show: false, more: false, less: false, same:false, toggle_state:0}];
 
 ###
@@ -54,8 +56,26 @@ W.includeAll = (c) ->
 
 ###
 
+W.clearFilter = (c) ->
+  c.more = false
+  c.less = false
+  c.same = false
+
 W.toggleColumn = (c) ->
-  c.distance_include = not c.distance_include
+  if not c.distance_include
+    c.distance_include = true
+    W.clearFilter(c)
+  else if c.distance_include and (not c.more) and (not c.less) and (not c.same)
+    c.more = true
+  else if c.distance_include and (c.more) and (not c.less) and (not c.same)
+    c.more = false
+    c.same = true
+  else if c.distance_include and (not c.more) and (not c.less) and (c.same)
+    c.same = false
+    c.less = true
+  else if c.distance_include and (not c.more) and (c.less) and (not c.same)
+    c.less = false
+    c.distance_include = false
 
 
 W.tableColumnNames = [     # dictionary
@@ -85,14 +105,19 @@ W.toggleColumnByKey = (key) ->
   (W.toggleColumn(c) for c in W.columnNames when W.columnKey(c) == key)
 
 W.whiskyInFilter = (w) ->
-   ((if c.less
+   (((
+     if w.selected
+       true
+     else if c.less
        w[c.name] < W.selectedWhisky[c.name]
      else if c.more
        w[c.name] > W.selectedWhisky[c.name]
      else if c.same
        w[c.name] == W.selectedWhisky[c.name]
-     else true
-    ) for c in W.columnNames).reduce((a,b) -> a and b))
+     else
+       true
+    ) for c in W.columnNames)
+   ).reduce((a,b) -> a and b)
 
 ###
 Convenience methods for selections of data
@@ -130,7 +155,7 @@ W.redraw = (sortChanged=true) ->
                 whisky.bottom5 = false           
 
     #assign mostSimilar / leastSimilar boolean columns to top/last 5
-    sortedWhiskies = (w for w in W.whiskies when not w.selected)    #clone + skip selected
+    sortedWhiskies = (w for w in W.filteredWhiskies() when not w.selected)    #clone + skip selected
     sortedWhiskies.sort((a, b) -> a.distance - b.distance)
     for w in sortedWhiskies[0..4]
         w.top5 = true

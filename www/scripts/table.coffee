@@ -42,7 +42,7 @@
   # assumes the div already hase table, thead, tbody elements in the html
   
 W.drawFull = () ->
-    drawTable("#full", W.whiskies, W.columnNames)
+    drawTable("#full", W.filteredWhiskies, W.columnNames)
 
 W.drawSelected = () ->
     if W.selectedWhisky?
