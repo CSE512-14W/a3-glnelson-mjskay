@@ -42,19 +42,21 @@
   # assumes the div already hase table, thead, tbody elements in the html
   
 W.drawFull = () ->
-    drawTable("#full", W.whiskies, W.tableColumnNames)
+    drawTable("#full", W.whiskies, W.columnNames)
     
 W.drawTop5 = (div, data, columns) ->
-    drawTable("#top5", W.top5(), W.tableColumnNames)
+    drawTable("#top5", W.top5(), W.columnNames)
 
 W.drawBot5 = (div, data, columns) ->
-    drawTable("#bot5", W.bot5(), W.tableColumnNames)
+    drawTable("#bot5", W.bot5(), W.columnNames)
 
 drawTable = (div, data, columns) ->
     table = d3.select(div).select("table")
                 .attr("class", "whisky-table")
     thead = table.select("thead")
     tbody = table.select("tbody")
+
+    showColumns = (c for c in columns when c.show)
 
     #remove selected whiskies from the table
     selectedWhiskies = (w for w in data when w.selected)
@@ -65,21 +67,22 @@ drawTable = (div, data, columns) ->
     tbody.selectAll("tr").remove()
  
     # append the header row
-    # TODO fix, 
     th = thead.append("tr")
         .selectAll("th")
-        .data(columns)
+        .data(showColumns, W.columnKey)
         .enter()
         .append("th")
-        .text((column) -> column)
+        .text((column) -> column.name)
         .on "click", () ->  # click to toggle 
-           W.toggleIncludeColumn(W.columnKey(d3.select(this).datum()))
+           W.toggleColumnByKey(W.columnKey(d3.select(this).datum()))
            W.redraw()
-         
+
     # set up flavor headings   
     flavorColumnNames = W.flavorColumnNames()
-    th.filter((column) -> column in flavorColumnNames)
+    th.filter((column) -> W.columnKey(column) in flavorColumnNames)
         .attr("class", "flavor")
+        .filter((column) -> not column.distance_include)
+        .attr("class", "flavor ignored-column")
     
     # create a row for each object in the data
     addWhiskies = (whiskies) ->
@@ -92,23 +95,26 @@ drawTable = (div, data, columns) ->
         # create a cell in each row for each column
         cells = rows.selectAll("td")
             .data (row) ->
-                columns.map (column) ->
+                showColumns.map (column) ->
                     column: column
-                    value: row[column]
+                    value: row[column.name]
             .enter()
-            .append("td")
+            .append("td") #add class here w function
             
         # create non-flavor cells
-        cells.filter((d) -> d.column not in flavorColumnNames) 
+        cells.filter((d) -> not d.column.flavor) 
             .html((d) -> d.value)
             .on "click", () ->  # click to select 
                 W.selectWhiskyByKey(W.whiskyKey(d3.select(this.parentNode).datum()))
                 W.redraw()
             
         # create flavor cells
-        cells.filter((d) -> d.column in flavorColumnNames) 
+        cells.filter((d) -> d.column.flavor) 
             .html((d) -> '<div class="flavor-bar" style="width: ' + (d.value / 4 * 100) + '%; height: 100%;">&nbsp;</div>')
             
+        # grey out ignored
+        cells.filter((column) -> not column.distance_include and column.flavor)
+        .classed("ignored-column", true)
 
     addWhiskies(selectedWhiskies)
     addWhiskies(unselectedWhiskies)

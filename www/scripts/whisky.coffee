@@ -19,25 +19,44 @@ W.columnKey = (column) -> column.name
 
 
 W.columnNames = [
-  {name: "RowID", distance_include: false, show: true, more: false, less: false, same:false},
-  {name: "Distillery", distance_include: false, show: true, more: false, less: false, same:false},
-  {name: "Body", distance_include: true, show: true, more: false, less: false, same:false},
-  {name: "Sweetness", distance_include: true, show: true, more: false, less: false, same:false},
-  {name: "Smoky", distance_include: true, show: true, more: false, less: false, same:false},
-  {name: "Medicinal", distance_include: true, show: true, more: false, less: false, same:false},
-  {name: "Tobacco", distance_include: true, show: true, more: false, less: false, same:false},
-  {name: "Honey", distance_include: true, show: true, more: false, less: false, same:false},
-  {name: "Spicy", distance_include: true, show: true, more: false, less: false, same:false},
-  {name: "Winey", distance_include: true, show: true, more: false, less: false, same:false},
-  {name: "Nutty", distance_include: true, show: true, more: false, less: false, same:false},
-  {name: "Malty", distance_include: true, show: true, more: false, less: false, same:false},
-  {name: "Fruity", distance_include: true, show: true, more: false, less: false, same:false},
-  {name: "Floral", distance_include: true, show: true, more: false, less: false, same:false},
-  {name: "Postcode", distance_include: false, show: true, more: false, less: false, same:false},
-  {name: "Longitude", distance_include: false, show: true, more: false, less: false, same:false},
-  {name: "Latitude", distance_include: false, show: true, more: false, less: false, same:false},
-  {name: "distance", distance_include: false, show: true, more: false, less: false, same:false},
-  {name: "selected", distance_include: false, show: true, more: false, less: false, same:false}];
+  {name: "RowID", distance_include: false, flavor: false, show: false, more: false, less: false, same:false, toggle_state:0},
+  {name: "Distillery", distance_include: false, flavor: false, show: true, more: false, less: false, same:false, toggle_state:0},
+  {name: "Body", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
+  {name: "Sweetness", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
+  {name: "Smoky", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
+  {name: "Medicinal", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
+  {name: "Tobacco", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
+  {name: "Honey", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
+  {name: "Spicy", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
+  {name: "Winey", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
+  {name: "Nutty", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
+  {name: "Malty", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
+  {name: "Fruity", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
+  {name: "Floral", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
+  {name: "Postcode", distance_include: false, flavor: false, show: false, more: false, less: false, same:false, toggle_state:0},
+  {name: "Longitude", distance_include: false, flavor: false, show: false, more: false, less: false, same:false, toggle_state:0},
+  {name: "Latitude", distance_include: false, flavor: false, show: false, more: false, less: false, same:false, toggle_state:0},
+  {name: "distance", flavor: false, distance_include: false, show: true, more: false, less: false, same:false, toggle_state:0},
+  {name: "selected", flavor: false, distance_include: false,  show: false, more: false, less: false, same:false, toggle_state:0}];
+
+###
+use if implement value filtering
+
+W.max = 4
+W.min = 0
+
+W.includeAll = (c) ->
+  c.more=W.min
+  c.less=W.max
+  c.same=false
+
+(W.includeAll(c) for c in W.columnNames)
+
+###
+
+W.toggleColumn = (c) ->
+  c.distance_include = not c.distance_include
+
 
 W.tableColumnNames = [     # dictionary
             "Distillery",
@@ -61,6 +80,9 @@ W.flavorColumnNames = () ->
 
 W.distanceColumnNames = () ->
   (W.columnKey(c) for c in W.columnNames when c.distance_include)
+
+W.toggleColumnByKey = (key) ->
+  (W.toggleColumn(c) for c in W.columnNames when W.columnKey(c) == key)
 
 ###
 Convenience methods for selections of data
