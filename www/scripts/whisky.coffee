@@ -12,25 +12,27 @@ Return the distance measure for distilleries on the map
 ###
 W.whiskyDistance = (whisky) -> (13 - whisky.distance)**2 / 169 * 10
 
-W.columnNames = ["RowID",
-            "Distillery",
-            "Body",
-            "Sweetness",
-            "Smoky",
-            "Medicinal",
-            "Tobacco",
-            "Honey",
-            "Spicy",
-            "Winey",
-            "Nutty",
-            "Malty",
-            "Fruity",
-            "Floral",
-            "Postcode",
-            "Longitude",
-            "Latitude",
-            "distance",
-            "selected"];
+W.columnNames = [
+            "RowID": {include: true, show: true},
+            "Distillery": {include: true, show: true},
+            "Body": {include: true, show: true},
+            "Sweetness": {include: true, show: true},
+            "Smoky": {include: true, show: true},
+            "Medicinal": {include: true, show: true},
+            "Tobacco": {include: true, show: true},
+            "Honey": {include: true, show: true},
+            "Spicy": {include: true, show: true},
+            "Winey": {include: true, show: true},
+            "Nutty": {include: true, show: true},
+            "Malty": {include: true, show: true},
+            "Fruity": {include: true, show: true},
+            "Floral": {include: true, show: true},
+            "Postcode": {include: true, show: true},
+            "Longitude": {include: true, show: true},
+            "Latitude": {include: true, show: true},
+            "distance": {include: true, show: true},
+            "selected": {include: false, show: true}
+            ];
 W.tableColumnNames = [     # dictionary
             "Distillery",
             "Body",
@@ -58,6 +60,19 @@ W.flavorColumnNames = () ->
     W.tableColumnNames[1..12]
 
 ###
+Convenience methods for selections of data
+###
+
+W.top5 = () ->
+  (w for w in data when w.top5)
+
+W.bot5 = () ->
+  (w for w in data when w.top5)
+
+W.filteredWhiskies = () ->
+  W.whiskies #TODO
+
+###
 Redraw maps and table
 ###
 W.redraw = () ->
@@ -80,7 +95,7 @@ W.redraw = () ->
         w.bottom5 = true
 
     W.redrawMaps(W.whiskies)
-    W.drawTable("#baseline", W.whiskies, W.tableColumnNames)
+    W.drawTable("#all", W.whiskies, W.tableColumnNames)
 
 
 ###
