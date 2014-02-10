@@ -21,7 +21,7 @@ W.columnKey = (column) -> column.name
 W.columnNames = [
   {name: "RowID", distance_include: false, flavor: false, show: false, more: false, less: false, same:false, toggle_state:0},
   {name: "Distillery", distance_include: false, flavor: false, show: true, more: false, less: false, same:false, toggle_state:0},
-  {name: "Body", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
+  {name: "Body", flavor: true, distance_include: true, show: true, more: true, less: false, same:false, toggle_state:0},
   {name: "Sweetness", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
   {name: "Smoky", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
   {name: "Medicinal", flavor: true, distance_include: true, show: true, more: false, less: false, same:false, toggle_state:0},
@@ -84,6 +84,16 @@ W.distanceColumnNames = () ->
 W.toggleColumnByKey = (key) ->
   (W.toggleColumn(c) for c in W.columnNames when W.columnKey(c) == key)
 
+W.whiskyInFilter = (w) ->
+   ((if c.less
+       w[c.name] < W.selectedWhisky[c.name]
+     else if c.more
+       w[c.name] > W.selectedWhisky[c.name]
+     else if c.same
+       w[c.name] == W.selectedWhisky[c.name]
+     else true
+    ) for c in W.columnNames).reduce((a,b) -> a and b))
+
 ###
 Convenience methods for selections of data
 ###
@@ -95,7 +105,7 @@ W.bot5 = () ->
   (w for w in W.whiskies when w.bottom5)
 
 W.filteredWhiskies = () ->
-  W.whiskies #TODO
+  ( w for w in W.whiskies when W.whiskyInFilter(w))
 
 ###
 Redraw maps and table
