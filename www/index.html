@@ -128,7 +128,9 @@
                 .append("td")
                 .html(function(d) { return d.value; })
                 .on("click", function(){ // click to select 
-                  d3.select(this.parentNode).datumstyle("background-color", "aliceblue")
+                  console.log(d3.select(this.parentNode).datum["RowID"])
+                  // don't select datum here to change value
+                  // instead change value in javascript var and call update function
                 })
 ;
             
@@ -168,50 +170,18 @@
                     })}) 
         .await (function (error, whiskies) {
             // for some reason right now none of this code is getting called here
-              console.log("await was called");
+            console.log("await was called");
             // initial conditions
-            // draw table
-            
             // select Ardbeg as default
 
             // draw baseline
+            redrawBaseline(4);// default is Ardbeg               
+
+            // draw table
 
             // draw map 
         /* when create data element, just have a on change event that updates d3 data value
         */
-        redrawBaseline(4);// default is Ardbeg               
-        var table = d3.select("#table")
-            .append("table")
-            .style("border-collapse", "collapse")
-            .style("border", "2px black solid")
-        
-            .selectAll("tr")
-            .data(data, whiskyKey)
-            .enter().append("tr")
-        
-            .select("td")
-            .data(function(d){return d;})
-            .enter().append("td")
-            .style("border", "1px black solid")
-            .style("padding", "5px")
-            .on("mouseover", function(){d3.select(this).style("background-color", "aliceblue")})
-            .on("mouseout", function(){d3.select(this).style("background-color", "white")})
-            .text(function(d){return d;})
-            .style("font-size", "12px");
-
-        var sampleSVG = d3.select("#chart")
-            .append("svg")
-            .attr("width", 300)
-            .attr("height", 300);    
-
-        sampleSVG.append("circle")
-            .style("stroke", "gray")
-            .style("fill", "white")
-            .attr("r", 40)
-            .attr("cx", 50)
-            .attr("cy", 50)
-            .on("mouseover", function(){d3.select(this).style("fill", "aliceblue");})
-            .on("mouseout", function(){d3.select(this).style("fill", "white");});
       });
 
     
