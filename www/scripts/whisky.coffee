@@ -61,15 +61,22 @@ W.flavorColumnNames = () ->
 Redraw maps and table
 ###
 W.redraw = () ->
-    #recalcuate distances
-    flavorColumns = W.flavorColumnNames() 
-    for whisky in W.whiskies
-        #euclidean distance
-        whisky.distance = Math.sqrt(
-            ((W.selectedWhisky[c] - whisky[c]) ** 2 for c in flavorColumns)
-            .reduce((a,b) -> a + b))
-        whisky.top5 = false
-        whisky.bottom5 = false
+    if W.selectedWhisky?
+        #recalcuate distances
+        flavorColumns = W.flavorColumnNames() 
+        for whisky in W.whiskies
+            #euclidean distance
+            whisky.distance = Math.sqrt(
+                ((W.selectedWhisky[c] - whisky[c]) ** 2 for c in flavorColumns)
+                .reduce((a,b) -> a + b))
+            whisky.top5 = false
+            whisky.bottom5 = false
+    else 
+        for whisky in W.whiskies
+            whisky.distance = 3     #default when nothing selected
+            whisky.top5 = false
+            whisky.bottom5 = false
+            
 
     #assign mostSimilar / leastSimilar boolean columns to top/last 5
     sortedWhiskies = (w for w in W.whiskies when not w.selected)    #clone + skip selected
@@ -91,6 +98,27 @@ W.selectWhiskyByKey = (key) ->
         whisky.selected = W.whiskyKey(whisky) == key
         if whisky.selected
             W.selectedWhisky = whisky
+
+# key of brushed whisky, or null if none brushed (e.g. whisky the mouse is over)
+W.brushedWhisky = null
+
+###
+Given a key, brush that whisky (and only that whisky)
+###
+W.brushWhiskyByKey = (key) ->
+    for whisky in W.whiskies
+        whisky.brushed = W.whiskyKey(whisky) == key
+        if whisky.brushed
+            W.brushedWhisky = whisky
+
+###
+Set no whisky to be brushed
+###
+W.unbrush = () ->
+    for whisky in W.whiskies
+        whisky.brushed = false
+    W.brushedWhisky = null
+    
 
 queue()
     .defer(d3.json, "uk.json")
