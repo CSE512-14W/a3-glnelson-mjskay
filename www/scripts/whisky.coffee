@@ -72,7 +72,7 @@ W.redraw = () ->
         whisky.bottom5 = false
 
     #assign mostSimilar / leastSimilar boolean columns to top/last 5
-    sortedWhiskies = W.whiskies.slice(0)    #clone
+    sortedWhiskies = (w for w in W.whiskies when not w.selected)    #clone + skip selected
     sortedWhiskies.sort((a, b) -> a.distance - b.distance)
     for w in sortedWhiskies[0..4]
         w.top5 = true
