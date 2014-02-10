@@ -105,7 +105,7 @@ redrawMap = ({svg, projection}, whiskies) ->
     polygons = d3.geom.voronoi(positions)
     #join polygons with key
     whiskyPolygons = ({polygon: polygons[i], key: W.whiskyKey(w)}\ 
-        for w, i in whiskies when polygons[i]?
+        for w, i in whiskies when polygons[i]? and not w.selected
         )
     
     g = svg.selectAll("g#voronoi")

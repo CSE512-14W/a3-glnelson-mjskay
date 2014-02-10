@@ -161,7 +161,7 @@ queue()
                 Longitude: +d.Longitude,
                 Latitude: +d.Latitude,
                 distance: 3, # default value
-                selected: d.RowID == "4" # default value
+                selected: false #d.RowID == "4" # default value
                 top5: false
                 bottom5: false
               } for d in whiskies)
