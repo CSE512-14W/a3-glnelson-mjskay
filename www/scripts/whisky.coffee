@@ -66,7 +66,7 @@ W.top5 = () ->
   (w for w in W.whiskies when w.top5)
 
 W.bot5 = () ->
-  (w for w in W.whiskies when w.top5)
+  (w for w in W.whiskies when w.bottom5)
 
 W.filteredWhiskies = () ->
   W.whiskies #TODO
@@ -94,7 +94,7 @@ W.redraw = () ->
         w.bottom5 = true
 
     W.redrawMaps(W.whiskies)
-    W.drawTable("#all", W.whiskies, W.tableColumnNames)
+    W.drawTables()
 
 
 ###
