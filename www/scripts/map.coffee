@@ -15,7 +15,7 @@ height = 550#1160
 
 #SPEYSIDE INSET
 speyside = { 
-    svg: d3.select("body").append("div").append("svg")
+    svg: d3.select("#maps").append("div").append("svg")
         .attr("width", width/2)
         .attr("height", height/3)
         .attr("class", "inset-map")
@@ -38,7 +38,7 @@ speyside = {
 #MAIN MAP
 scotland = {
     #d3 map object used for building map
-    svg: d3.select("body").append("div").append("svg")
+    svg: d3.select("#maps").append("div").append("svg")
         .attr("width", width - 200)
         .attr("height", height)
         .attr("class", "map")
@@ -54,12 +54,12 @@ scotland = {
 
 #ISLAY INSET
 islay = { 
-    svg: d3.select("body").append("div").append("svg")
+    svg: d3.select("#maps").append("div").append("svg")
         .attr("width", width/3)
         .attr("height", height/3)
         .attr("class", "inset-map")
         .style("position", "relative")
-        .style("top", "-20")
+        .style("top", "-5")
 
     projection: d3.geo.albers()
         .center([0, 55.4])
@@ -183,6 +183,23 @@ queue()
                 
             #draw inset map
             drawMap(uk, inset)
+
+        #ZOOM MARKERS
+        zoomLines = [
+                [[102,6],[239,173]]
+                [[400,6],[352,173]]
+                [[1,550],[71,418]]
+                [[202,550],[118,418]]
+            ]
+        for line in zoomLines
+            scotland.svg.append("path")
+                .attr("d", d3.svg.line()(line))
+                .attr("class", "inset-zoom-line")
+            
+            
+        # 102,6
+        # 239, 173
+        
 
         #DISTILLERIES
         #draw distilleries / updateable attributes

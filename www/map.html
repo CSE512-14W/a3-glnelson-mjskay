@@ -26,17 +26,26 @@
 	stroke: #aaa;
 }
 
-.inset-region {
-	fill: #ddd;
+.inset-region, .inset-zoom-line {
 	stroke: #777;
 	stroke-dasharray: 2,2;
 	stroke-linejoin: round;
     opacity: .35;
 }
 
+.inset-region {
+    fill: #ddd;
+}
+
 .inset-map {
     border: 1px solid #ddd;
     background: white;
+}
+
+#maps {
+    position: absolute;
+    right: 0;
+    margin-right: 10px;
 }
 
 </style>
@@ -50,5 +59,6 @@
 <script type="text/coffeescript" src="scripts/map.coffee"></script>
 </head>
 <body>
+<div id="maps"></div>
 </body>
 </html>
