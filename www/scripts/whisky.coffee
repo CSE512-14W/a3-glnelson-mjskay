@@ -12,6 +12,12 @@ Return the distance measure for distilleries on the map
 ###
 W.whiskyDistance = (whisky) -> (13 - whisky.distance)**2 / 169 * 10
 
+###
+Return the key for joining column data in d3
+###
+W.columnKey = (column) -> column.name
+
+
 W.columnNames = {
             "RowID": {distance_include: false, show: true},
             "Distillery": {distance_include: false, show: true},
