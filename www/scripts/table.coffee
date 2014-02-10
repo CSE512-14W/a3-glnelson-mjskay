@@ -42,9 +42,15 @@
   # assumes the div already hase table, thead, tbody elements in the html
   
 W.drawFull = () ->
-    div = "#full"
-    data = W.whiskies
-    columns = W.tableColumnNames
+    drawTable("#full", W.whiskies, W.tableColumnNames)
+    
+W.drawTop5 = (div, data, columns) ->
+    drawTable("#top5", W.top5(), W.tableColumnNames)
+
+W.drawBot5 = (div, data, columns) ->
+    drawTable("#bot5", W.bot5(), W.tableColumnNames)
+
+drawTable = (div, data, columns) ->
     table = d3.select(div).select("table")
                 .attr("class", "whisky-table")
     thead = table.select("thead")
@@ -104,51 +110,6 @@ W.drawFull = () ->
     addWhiskies(selectedWhiskies)
     addWhiskies(unselectedWhiskies)
 
-W.drawTop5 = (div, data, columns) ->
-  draw5Table("#top5", W.top5(), W.tableColumnNames)
-
-W.drawBot5 = (div, data, columns) ->
-  draw5Table("#bot5", W.bot5(), W.tableColumnNames)
-
-draw5Table = (div, data, columns) ->
-    table = d3.select(div).select("table")
-                .attr("class", "whisky-table")
-    thead = table.select("thead")
-    tbody = table.select("tbody")
-
-    
-    # append the header row
-    # TODO fix, 
-    thead.selectAll("tr").remove()
-    thead.append("tr")
-        .selectAll("th")
-        .data(columns)
-        .enter()
-        .append("th")
-            .text((column) -> column)
-    
-    # delete all rows, would be nice to find a way to transition
-    tbody.selectAll("tr").remove()
-
-    # create a row for each object in the data
-    rows = tbody.selectAll("tr")
-        .data(data, W.whiskyKey)
-        .enter()
-        .append("tr")
-        .sort((a, b) -> a.distance - b.distance)
-  
-    # create a cell in each row for each column
-    cells = rows.selectAll("td")
-        .data (row) ->
-            columns.map (column) ->
-                column: column
-                value: row[column]
-        .enter()
-        .append("td")
-        .html((d) -> d.value)
-        .on "click", () ->  # click to select 
-            W.selectWhiskyByKey(W.whiskyKey(d3.select(this.parentNode).datum()))
-            W.redraw()
          
 W.drawTables = () ->
     W.drawFull()

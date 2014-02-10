@@ -47,10 +47,6 @@ W.tableColumnNames = [     # dictionary
             "Malty",
             "Fruity",
             "Floral",
-            "distance",
-            "top5"
-            "bottom5"
-            "selected"
             ];
 
 
