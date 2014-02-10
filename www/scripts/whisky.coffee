@@ -51,6 +51,13 @@ W.tableColumnNames = [     # dictionary
             "distance"];
 
 
+###
+Redraw maps and table
+###
+W.redraw = () ->
+    W.redrawMaps(W.whiskies)
+    W.drawTable("#baseline", W.whiskies, W.tableColumnNames)
+
 
 queue()
     .defer(d3.json, "uk.json")
@@ -79,5 +86,5 @@ queue()
               } for d in whiskies)
         
         W.setupTable()
-        #W.setupMaps(uk)
+        W.setupMaps(uk)
 

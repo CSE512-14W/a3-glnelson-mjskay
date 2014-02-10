@@ -1,20 +1,10 @@
-###
-Return the key for joining whisky data in d3
-###
-whiskyKey = (whisky) -> whisky.RowID
-
-###
-Return the distance measure for ordering the given whisky
-###
-whiskyDistance = (whisky) -> Math.random() * 2 + 1    #TODO: properly map this to distance
-
 # Setup maps 
 width = 600
 height = 550#1160
 
 
 #SPEYSIDE INSET
-speyside = { 
+W.speyside = speyside = { 
     svg: d3.select("#maps").append("div").append("svg")
         .attr("width", width/2)
         .attr("height", height/3)
@@ -36,7 +26,7 @@ speyside = {
 } 
 
 #MAIN MAP
-scotland = {
+W.scotland = scotland = {
     #d3 map object used for building map
     svg: d3.select("#maps").append("div").append("svg")
         .attr("width", width - 200)
@@ -53,7 +43,7 @@ scotland = {
 }
 
 #ISLAY INSET
-islay = { 
+W.islay = islay = { 
     svg: d3.select("#maps").append("div").append("svg")
         .attr("width", width/3)
         .attr("height", height/3)
@@ -88,12 +78,12 @@ whiskies: array of whiskies, e.g. rows from whisky.csv
 ### 
 redrawMap = ({svg, projection}, whiskies) ->
     distilleries = svg.selectAll("circle")
-        .data(whiskies, whiskyKey)
+        .data(whiskies, W.whiskyKey)
 
     #update existing distilleries
     distilleries
         .transition()
-        .attr("r", whiskyDistance)
+        .attr("r", W.whiskyDistance)
 
     #create non-existing ones    
     distilleries
@@ -102,7 +92,7 @@ redrawMap = ({svg, projection}, whiskies) ->
             .attr("cy", (d) -> projection([d.Longitude, d.Latitude])[1])
             .attr("r", 0)
             .transition()
-            .attr("r", whiskyDistance)
+            .attr("r", W.whiskyDistance)
             
     #remove exiting ones
     distilleries
@@ -124,7 +114,7 @@ isWhiskyInInset = (whisky) ->
 ###
 Redraw all maps / insets
 ###
-redrawMaps = (whiskies) -> 
+W.redrawMaps = (whiskies) -> 
     #first, draw main map with points in insets omitted
     whiskySubset = (w for w in whiskies when not isWhiskyInInset(w))
     redrawMap(scotland, whiskySubset)
@@ -160,54 +150,42 @@ drawMap = (uk, {svg, projection}) ->
         .attr("d", projectPath)
         .attr("class", "subunit-boundary")
             
-# load UK map data and distillery data
-queue()
-    .defer(d3.json, "uk.json")
-    .defer(d3.csv, "whiskies.csv")
-    .await (error, uk, whiskies) ->
+W.setupMaps = (uk) ->
+    #MAIN MAP SETUP
+    drawMap(uk, scotland)
 
-        #MAIN MAP SETUP
-        drawMap(uk, scotland)
-
-        #INSET MAPS        
-        for inset in insets
-            #draw inset outline on main map
-            p0 = scotland.projection(inset.p0)
-            p1 = scotland.projection(inset.p1)
-            scotland.svg.append("rect")
-                .attr("x", p0[0])
-                .attr("y", p1[1])
-                .attr("width", Math.abs(p1[0] - p0[0]))
-                .attr("height", Math.abs(p1[1] - p0[1]))
-                .attr("class", "inset-region")
-                
-            #draw inset map
-            drawMap(uk, inset)
-
-        #ZOOM MARKERS
-        zoomLines = [
-                [[102,6],[239,173]]
-                [[400,6],[352,173]]
-                [[1,550],[71,418]]
-                [[202,550],[118,418]]
-            ]
-        for line in zoomLines
-            scotland.svg.append("path")
-                .attr("d", d3.svg.line()(line))
-                .attr("class", "inset-zoom-line")
+    #INSET MAPS        
+    for inset in insets
+        #draw inset outline on main map
+        p0 = scotland.projection(inset.p0)
+        p1 = scotland.projection(inset.p1)
+        scotland.svg.append("rect")
+            .attr("x", p0[0])
+            .attr("y", p1[1])
+            .attr("width", Math.abs(p1[0] - p0[0]))
+            .attr("height", Math.abs(p1[1] - p0[1]))
+            .attr("class", "inset-region")
             
-            
-        # 102,6
-        # 239, 173
+        #draw inset map
+        drawMap(uk, inset)
+
+    #ZOOM MARKERS
+    zoomLines = [
+            [[102,6],[239,173]]
+            [[400,6],[352,173]]
+            [[1,550],[71,418]]
+            [[202,550],[118,418]]
+        ]
+    for line in zoomLines
+        scotland.svg.append("path")
+            .attr("d", d3.svg.line()(line))
+            .attr("class", "inset-zoom-line")
         
+        
+    # 102,6
+    # 239, 173
+    
 
-        #DISTILLERIES
-        #draw distilleries / updateable attributes
-        redrawMaps(whiskies)
-
-        #save some globals for exploring in-browser
-        window.scotland = scotland
-        window.insets = insets
-        window.redrawMap = redrawMap
-        window.redrawMaps = redrawMaps
-        window.whiskies = whiskies
+    #DISTILLERIES
+    #draw distilleries / updateable attributes
+    W.redrawMaps(W.whiskies)

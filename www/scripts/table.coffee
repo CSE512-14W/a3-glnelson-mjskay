@@ -46,6 +46,9 @@ W.drawTable = (div, data, columns) ->
                 .attr("style", "margin-left: 250px")
     thead = table.select("thead")
     tbody = table.select("tbody")
+
+    #remove selected whiskies from the table
+    data = (w for w in data when not w.selected)
     
     # append the header row
     # TODO fix, 
@@ -57,10 +60,13 @@ W.drawTable = (div, data, columns) ->
             .text((column) -> column)
     
     # create a row for each object in the data
+    tbody.selectAll("tr").remove()
     rows = tbody.selectAll("tr")
-        .data(data)
+        .data(data, W.whiskyKey)
         .enter()
         .append("tr")
+        .sort((a, b) -> a.distance - b.distance)
+    
     
     # create a cell in each row for each column
     cells = rows.selectAll("td")
