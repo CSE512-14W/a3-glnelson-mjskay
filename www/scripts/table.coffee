@@ -54,7 +54,7 @@ W.drawSelected = () ->
         drawTable("#top5", W.top5(), W.columnNames)
         drawTable("#bot5", W.bot5(), W.columnNames)
     else
-        d3.select("#full").select("h2").text("Explore scotch by flavor. Select a scotch to begin:").style("margin-bottom", "10px")
+        d3.select("#full").select("h2").text("Explore scotch by flavor. Select a scotch to begin; click columns to filter.").style("margin-bottom", "10px")
         d3.select("#selected").style("display", "none")
         d3.select("#top5").style("display", "none")
         d3.select("#bot5").style("display", "none")
