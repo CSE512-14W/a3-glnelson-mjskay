@@ -66,6 +66,18 @@ W.columnFilterName = (c) ->
   else
     c.name
 
+W.columnFilterTitle = (c) ->
+  if c.more
+    "Only showing scotches with more " + c.name + " than " + W.selectedWhisky.Distillery
+  else if c.same
+    "Only showing scotches with the same " + c.name + " as " + W.selectedWhisky.Distillery
+  else if c.less
+    "Only showing scotches with less " + c.name + " then " + W.selectedWhisky.Distillery
+  else if c.distance_include
+    "Click to filter on " + c.name
+  else
+    c.name + " is not used to compare scotches"
+
 W.clearFilter = (c) ->
   c.more = false
   c.less = false

@@ -92,6 +92,7 @@ drawTable = (div, data, columns) ->
         .enter()
         .append("th")
         .text((column) -> W.columnFilterName(column))
+        .attr("title", (column) -> W.columnFilterTitle(column))
         .on "click", () ->  # click to toggle 
            W.toggleColumnByKey(W.columnKey(d3.select(this).datum()))
            W.redraw()
