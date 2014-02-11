@@ -42,7 +42,7 @@ We originally imagined more intuitive interactions for filtering, but did not ha
     - brainstorm: 5 hours
     - ~ 18-20 hours each coding / building
  
-  - What aspects took the most time?
+- What aspects took the most time?
     - coding
   
   
