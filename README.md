@@ -32,8 +32,17 @@ We originally imagined more intuitive interactions for filtering, but did not ha
 
 ## Development Process
 
-Include:
-- Breakdown of how the work was split among the group members. 
-- a commentary on the development process, including answers to the following questions: 
+- Breakdown of how the work was split among the group members: 
+  - brainstorming and design done together.
+  - code split into table / map code initially and worked on separately.
+  - code brought together later and worked on concurrently for polish.
+
+ - a commentary on the development process, including answers to the following questions:
   - Roughly how much time did you spend developing your application?
+    - brainstorm: 5 hours
+    - ~ 18-20 hours each coding / building
+ 
   - What aspects took the most time?
+    - coding
+  
+  
