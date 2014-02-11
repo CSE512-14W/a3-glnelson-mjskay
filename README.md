@@ -37,7 +37,7 @@ We originally imagined more intuitive interactions for filtering, but did not ha
   - code split into table / map code initially and worked on separately.
   - code brought together later and worked on concurrently for polish.
 
- - a commentary on the development process, including answers to the following questions:
+- a commentary on the development process, including answers to the following questions:
   - Roughly how much time did you spend developing your application?
     - brainstorm: 5 hours
     - ~ 18-20 hours each coding / building
