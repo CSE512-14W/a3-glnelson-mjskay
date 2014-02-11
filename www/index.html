@@ -109,7 +109,7 @@ circle.brushed {
 #voronoi path {
     fill: none;
     pointer-events: all;
-    stroke: red;
+/*     stroke: red; */
 }
 
 .flavor-bar {
@@ -131,6 +131,8 @@ th {
     height: 50px;
     vertical-align:bottom;
     width: 150px;
+    min-width: 150px;
+    max-width: 150px;
     font-weight: bold;
     -webkit-transform: translate3d(0, 0, 0);
     -o-transform:      translate3d(0, 0, 0);
@@ -141,11 +143,13 @@ th {
 
 tbody tr:hover, tbody tr.brushed {
     background: #eee;
+    color: #66c2a5;    
 }
 
 td {
     border-top: 1px solid #ddd; 
     padding: 2px 5px 2px 0;
+    cursor: pointer;
 }
 
 th.flavor {
@@ -166,6 +170,10 @@ th.flavor {
     -moz-transform-origin:    0% 100%;
     transform-origin:         0% 100%;
     z-index: 0;
+    cursor: pointer;
+}
+th.flavor:hover {
+    color: #66c2a5;
 }
 
 /*table div styles*/

@@ -1,4 +1,4 @@
-# Setup maps 
+# Setup maps ata
 width = 600
 height = 550#1160
 
@@ -77,17 +77,26 @@ transitionMs = 500
 Return a class to assign to the circle representing this whisky
 ###
 whiskyCircleClass = (whisky) ->
-    class_ = (if whisky.selected 
+#    class_ = (if whisky.selected 
+#        "selected" 
+#    else if whisky.top5
+#        "top5"
+#    else if whisky.bottom5
+#        "bottom5"
+#    else "")
+#    if whisky.brushed
+#        class_ + " brushed"
+#    else
+#        class_
+    if whisky.selected 
         "selected" 
+    else if whisky.brushed
+        "brushed"
     else if whisky.top5
         "top5"
     else if whisky.bottom5
         "bottom5"
-    else "")
-    if whisky.brushed
-        class_ + " brushed"
-    else
-        class_
+    else ""
 
     
 
@@ -108,13 +117,13 @@ redrawMap = ({svg, projection}, whiskies) ->
         for w, i in whiskies when polygons[i]? and not w.selected
         )
     
-    g = svg.selectAll("g#voronoi")
+    #set up voronois for easy brushing/selection
+    v = svg.select("g#voronoi").selectAll("path")
         .data(whiskyPolygons, (d) -> d.key)
-        .enter()
-        .append("g")
-        .attr("id", "voronoi")
- 
-    g.append("path")
+        .attr("d", (d) -> "M" + d.polygon.join("L") + "Z")
+
+    v.enter()
+        .append("path")
         .attr("d", (d) -> "M" + d.polygon.join("L") + "Z")
         .on "click", (d) ->  # click to select 
             W.selectWhiskyByKey(d.key)
@@ -125,7 +134,9 @@ redrawMap = ({svg, projection}, whiskies) ->
         .on "mouseout", (d) ->
             W.unbrush()
             W.redraw(sortChanged=false)
-                
+    
+    v.exit()
+        .remove()
 
 
     distilleries = svg.selectAll("circle")
@@ -252,6 +263,10 @@ W.setupMaps = (uk) ->
             .attr("d", d3.svg.line()(line))
             .attr("class", "inset-zoom-line")
     
+    #LAYERS FOR VORONOI PATHS
+    d3.selectAll("svg")
+        .append("g")
+        .attr("id", "voronoi")
 
     #DISTILLERIES
     #draw distilleries / updateable attributes

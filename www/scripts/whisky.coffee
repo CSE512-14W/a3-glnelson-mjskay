@@ -36,9 +36,9 @@ W.columnNames = [
   {name: "Postcode", distance_include: false, flavor: false, show: false, more: false, less: false, same:false, toggle_state:0},
   {name: "Longitude", distance_include: false, flavor: false, show: false, more: false, less: false, same:false, toggle_state:0},
   {name: "Latitude", distance_include: false, flavor: false, show: false, more: false, less: false, same:false, toggle_state:0},
-  {name: "distance", flavor: false, distance_include: false, show: true, more: false, less: false, same:false, toggle_state:0},
-  {name: "top5", flavor: false, distance_include: false, show: true, more: false, less: false, same:false, toggle_state:0},
-  {name: "bottom5", flavor: false, distance_include: false, show: true, more: false, less: false, same:false, toggle_state:0},
+  {name: "distance", flavor: false, distance_include: false, show: false, more: false, less: false, same:false, toggle_state:0},
+  {name: "top5", flavor: false, distance_include: false, show: false, more: false, less: false, same:false, toggle_state:0},
+  {name: "bottom5", flavor: false, distance_include: false, show: false, more: false, less: false, same:false, toggle_state:0},
   {name: "selected", flavor: false, distance_include: false,  show: false, more: false, less: false, same:false, toggle_state:0}];
 
 ###
@@ -58,11 +58,11 @@ W.includeAll = (c) ->
 
 W.columnFilterName = (c) ->
   if c.more
-    "> "+c.name
+    ">\xA0"+c.name
   else if c.same
-    "= "+c.name
+    "=\xA0"+c.name
   else if c.less
-    "< "+c.name
+    "<\xA0"+c.name
   else
     c.name
 
